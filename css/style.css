@@ -45,7 +45,6 @@ a {
 
 .btn {
   border: none;
-  /* color: #9873ff; */
   background-color: transparent;
   cursor: pointer;
 }
@@ -200,11 +199,6 @@ a {
   transition: opacity .4s ease-in, visibility .4s ease-in;
 }
 
-.modal-visible {
-  opacity: 1;
-  visibility: visible;
-}
-
 .add-new-client__modal {
   position: absolute;
   left: 50%;
@@ -318,4 +312,52 @@ a {
   font-size: 12px;
   color: #333;
   text-decoration: underline;
+}
+
+.contact-container:not(:first-child) {
+  margin-top: 15px;
+}
+
+.selectCustom {
+  padding: 8px 0 8px 12px;
+  max-width: 123px;
+  border: 1px solid #c8c5d1;
+  border-radius: 0;
+  font-size: 12px;
+  background-color: #e7e5eb;
+}
+
+.contact-input {
+  position: relative;
+  padding: 9px 0 10px 12px;
+  width: 279px;
+  border: 1px solid #c8c5d1;
+  border-radius: 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  background-color: #efeef1;
+}
+
+.contact-input::placeholder {
+  font-size: 14px;
+  font-weight: 400;
+  color: #b0b0b0;
+}
+
+.delete-contact-btn {
+  position: absolute;
+  right: 27px;
+  width: 27px;
+  height: 37px;
+  border: 1px solid #c8c5d1;
+  background-color: #e7e5eb;
+  background-image: url('../img/delete-contact.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
 }
