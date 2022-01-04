@@ -277,7 +277,7 @@ a {
   padding-bottom: 8px;
   width: 100%;
   text-align: center;
-  background-color: #efeef1;
+  background-color: #f4f3f6;
 }
 
 .add-contact__btn {
@@ -336,7 +336,7 @@ a {
   font-weight: 600;
   font-size: 14px;
   color: #333;
-  background-color: #efeef1;
+  background-color: #f4f3f6;
 }
 
 .contact-input::placeholder {
