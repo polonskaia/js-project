@@ -2,8 +2,8 @@ import fetch from "node-fetch"
 
 const clients = [
   {
-    name: 'Скворцов',
-    surname: 'Денис',
+    name: 'Денис',
+    surname: 'Скворцов',
     lastName: 'Юрьевич',
     contacts: [
       {
@@ -41,8 +41,8 @@ const clients = [
     ]
   },
   {
-    name: 'Куприянов',
-    surname: 'Арсений',
+    name: 'Арсений',
+    surname: 'Куприянов',
     lastName: 'Валерьевич',
     contacts: [
       {
@@ -56,8 +56,8 @@ const clients = [
     ]
   },
   {
-    name: 'Константинопольская',
-    surname: 'Людмила',
+    name: 'Людмила',
+    surname: 'Константинопольская',
     lastName: 'Александровна',
     contacts: [
       {
@@ -75,8 +75,8 @@ const clients = [
     ]
   },
   {
-    name: 'Дмитриевский',
-    surname: 'Олег',
+    name: 'Олег',
+    surname: 'Дмитриевский',
     lastName: 'Алексеевич',
     contacts: [
       {
@@ -86,8 +86,8 @@ const clients = [
     ]
   },
   {
-    name: 'Александрова',
-    surname: 'Татьяна',
+    name: 'Татьяна',
+    surname: 'Александрова',
     lastName: 'Павловна',
     contacts: [
       {
