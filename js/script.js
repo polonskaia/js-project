@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const addContactBtn = document.getElementById('add-contact__btn');
   const saveNewClientBtn = document.getElementById('add-new-client__save-btn');
   const tableBody = document.querySelector('.table__tbody');
+  const searchInput = document.querySelector('.header__input');
+  let timeOutId;
+
   const contactsList = ['Телефон', 'Доп. телефон', 'Email', 'Vk', 'Facebook', 'Другое'];
 
   addClientButton.addEventListener('click', () => {
@@ -76,20 +79,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function createTable(ID, fullName, creatingDate, updatingDate, contacts) {
-    const crDate = new Date(creatingDate);
-    const updDate = new Date(updatingDate);
-
     const row = document.createElement('tr');
     tableBody.append(row);
 
     row.innerHTML = `
     <td>${ID}</td>
     <td>${fullName}</td>
-    <td>${crDate}</td>
-    <td>${updDate}</td>
+    <td>${formatDate(new Date(creatingDate))}</td>
+    <td>${formatDate(new Date(updatingDate))}</td>
     <td>...</td>
-    <td>Изменить</td>
-    <td>Удалить</td>
+    <td><button class="btn"><img src="./img/edit-icon.svg"> Изменить</button></td>
+    <td><button class="btn"><img src="./img/cancel-icon.svg"> Удалить</button></td>
     `;
   }
 
@@ -108,6 +108,44 @@ document.addEventListener('DOMContentLoaded', () => {
       firstCells.classList.add('table__td_id');
     });
   }
+
+  function formatDate(date) {
+    let day = date.getDate();
+    if (day < 10) {
+      day = '0' + day;
+    }
+
+    let month = date.getMonth() + 1;
+    if (month < 10) {
+      month = '0' + month;
+    }
+
+    let hours = date.getHours();
+    if (hours < 10) {
+      hours = '0' + hours;
+    }
+
+    let minutes = date.getMinutes();
+    if (minutes < 10) {
+      minutes = '0' + minutes;
+    }
+
+    return `${[day, month, date.getFullYear()].join('.')} <span class="time">${hours}:${minutes}</span>`;
+  }
+
+  async function searchClients(input) {
+    const searchString = input.value;
+    const searchClients = await fetch(`http://localhost:3000/api/clients?search=${searchString}`);
+    const searchClientsData = await searchClients.json();
+    console.log(searchClientsData);
+
+    return searchClientsData;
+  }
+
+  searchInput.addEventListener('input', () => {
+    clearTimeout(timeOutId);
+    timeOutId = setTimeout(() => searchClients(searchInput), 3000);
+  });
 
   async function getClientsFromServer() {
     const clients = await fetch('http://localhost:3000/api/clients');
