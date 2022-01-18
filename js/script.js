@@ -7,9 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const addContactContainer = document.getElementById('add-contact-btn__container');
   const addContactBtn = document.getElementById('add-contact__btn');
   const saveNewClientBtn = document.getElementById('add-new-client__save-btn');
-  const tableBody = document.querySelector('.table__tbody');
   const searchInput = document.querySelector('.header__input');
+  const buttonFullNameSort = document.querySelector('.th__btn_fullname');
+  const buttonIDSort = document.querySelector('.th__btn_id');
+  const buttonCreateSort = document.querySelector('.th__btn_create');
+  const buttonUpdateSort = document.querySelector('.th__btn_update');
+  let tableBody = document.querySelector('.table__tbody');
   let timeOutId;
+  let sortedList;
 
   const contactsList = ['Телефон', 'Доп. телефон', 'Email', 'Vk', 'Facebook', 'Другое'];
 
@@ -43,7 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
     addNewClientModalContainer.classList.remove('visible');
   });
 
-  function createContactSelect(container, list) {
+  searchInput.addEventListener('input', () => {
+    clearTimeout(timeOutId);
+    timeOutId = setTimeout(searchClients, 300);
+  });
+
+  function createContactSelect(container, contactsList) {
     const selectAndInputContainer = document.createElement('div');
     selectAndInputContainer.classList.add('contact-container');
     container.insertBefore(selectAndInputContainer, addContactBtn);
@@ -52,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     contactSelect.classList.add('selectCustom')
     selectAndInputContainer.appendChild(contactSelect);
 
-    list.forEach((item) => {
+    contactsList.forEach((item) => {
       const contactOption = document.createElement('option');
       contactOption.innerHTML = item;
       contactOption.setAttribute('value', item);
@@ -78,19 +88,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function createTable(ID, fullName, creatingDate, updatingDate, contacts) {
-    const row = document.createElement('tr');
-    tableBody.append(row);
+  function createTable(array) {
+    if (tableBody) {
+      let newTableBody = document.createElement('tbody')
+      newTableBody.classList.add('table__tbody');
+      tableBody.parentNode.replaceChild(newTableBody, tableBody);
+      tableBody = newTableBody;
+    }
 
-    row.innerHTML = `
-    <td>${ID}</td>
-    <td>${fullName}</td>
-    <td>${formatDate(new Date(creatingDate))}</td>
-    <td>${formatDate(new Date(updatingDate))}</td>
-    <td>...</td>
-    <td><button class="btn"><img src="./img/edit-icon.svg"> Изменить</button></td>
-    <td><button class="btn"><img src="./img/cancel-icon.svg"> Удалить</button></td>
-    `;
+    array.forEach((client) => {
+      const id = client.id;
+      const fullName = [client.surname, client.name, client.lastName].join(' ');
+      const creatingDate = client.createdAt;
+      const updatingDate = client.updatedAt;
+      const contactsList = client.contacts;
+
+      const row = document.createElement('tr');
+      tableBody.append(row);
+
+      row.innerHTML = `
+      <td>${id}</td>
+      <td>${fullName}</td>
+      <td>${formatDate(new Date(creatingDate))}</td>
+      <td>${formatDate(new Date(updatingDate))}</td>
+      <td>...</td>
+      <td><button class="btn"><img src="./img/edit-icon.svg"> Изменить</button></td>
+      <td><button class="btn"><img src="./img/cancel-icon.svg"> Удалить</button></td>
+      `;
+
+      addClassesToTableCells();
+    });
   }
 
   function addClassesToTableCells() {
@@ -133,18 +160,71 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${[day, month, date.getFullYear()].join('.')} <span class="time">${hours}:${minutes}</span>`;
   }
 
-  async function searchClients(input) {
-    const searchString = input.value;
+  // Функция поиска клиентов (фильтрация)
+  async function searchClients() {
+    const searchString = searchInput.value;
     const searchClients = await fetch(`http://localhost:3000/api/clients?search=${searchString}`);
     const searchClientsData = await searchClients.json();
     console.log(searchClientsData);
 
+    createTable(searchClientsData);
+
     return searchClientsData;
   }
 
-  searchInput.addEventListener('input', () => {
-    clearTimeout(timeOutId);
-    timeOutId = setTimeout(() => searchClients(searchInput), 3000);
+  // Сортировка
+  function sortByField(field) {
+    return (a, b) => a[field] > b[field] ? 1 : -1;
+  }
+
+  // Функция сортировки клиентов по ФИО
+  async function sortClientsByFullName() {
+    let clientsList = await searchClients();
+    console.log(clientsList)
+
+    sortedList = clientsList.sort((a, b) => {
+      return `${a['surname']} ${a['name']} ${a['lastName']}` > `${b['surname']} ${b['name']} ${b['lastName']}` ? 1 :-1
+    });
+
+    if (buttonFullNameSort.textContent === 'А-Я') {
+      buttonFullNameSort.textContent = 'Я-А';
+      sortedList = clientsList.reverse();
+    } else {
+      buttonFullNameSort.textContent = 'А-Я';
+    }
+
+    createTable(sortedList);
+  }
+
+  buttonFullNameSort.addEventListener('click', () => {
+    sortClientsByFullName();
+  });
+
+  // Функция сортировки клиентов
+  async function sortClients(field, button, boolean) {
+    let clientsList = await searchClients();
+
+    sortedList = clientsList.sort(sortByField(field));
+
+    button.classList.toggle('flip');
+
+    if (button.classList.contains('flip') === boolean) {
+      sortedList = clientsList.reverse();
+    }
+
+    createTable(sortedList);
+  }
+
+  buttonIDSort.addEventListener('click', () => {
+    sortClients('id', buttonIDSort, false);
+  });
+
+  buttonCreateSort.addEventListener('click', () => {
+    sortClients('createdAt', buttonCreateSort, true);
+  });
+
+  buttonUpdateSort.addEventListener('click', () => {
+    sortClients('updatedAt', buttonUpdateSort, true);
   });
 
   async function getClientsFromServer() {
@@ -157,16 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const clientsList = await getClientsFromServer();
     console.log(clientsList);
 
-    clientsList.forEach((client) => {
-      const id = client.id;
-      const fname = [client.surname, client.name, client.lastName].join(' ');
-      const create = client.createdAt;
-      const update = client.updatedAt;
-      const contactsList = client.contacts;
-      createTable(id, fname, create, update, contactsList);
-    });
-
-    addClassesToTableCells();
+    createTable(clientsList);
   })();
 
 });
