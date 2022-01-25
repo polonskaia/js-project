@@ -106,33 +106,75 @@ document.addEventListener('DOMContentLoaded', () => {
       const row = document.createElement('tr');
       tableBody.append(row);
 
-      row.innerHTML = `
-      <td>${id}</td>
-      <td>${fullName}</td>
-      <td>${formatDate(new Date(creatingDate))}</td>
-      <td>${formatDate(new Date(updatingDate))}</td>
-      <td>...</td>
-      <td><button class="btn"><img src="./img/edit-icon.svg"> Изменить</button></td>
-      <td><button class="btn"><img src="./img/cancel-icon.svg"> Удалить</button></td>
-      `;
+      // ID
+      const tableDataID = document.createElement('td');
+      tableDataID.innerHTML = id;
+      tableDataID.classList.add('table__td_id', 'table__td');
+      row.appendChild(tableDataID);
 
-      addClassesToTableCells();
-    });
-  }
+      // Фамилия Имя Отчество
+      const tableDataFullName = document.createElement('td');
+      tableDataFullName.innerHTML = fullName;
+      tableDataFullName.classList.add('table__td');
+      row.appendChild(tableDataFullName);
 
-  function addClassesToTableCells() {
-    const tdList = document.getElementsByTagName('td');
-    const tdArray = Array.from(tdList);
+      // Дата и время создания
+      const tableDataCreate = document.createElement('td');
+      tableDataCreate.innerHTML = formatDate(new Date(creatingDate));
+      tableDataCreate.classList.add('table__td');
+      row.appendChild(tableDataCreate);
 
-    tdArray.forEach((td) => {
-      td.classList.add('table__td');
-    });
+      // Последние изменения
+      const tableDataUpdate = document.createElement('td');
+      tableDataUpdate.innerHTML = formatDate(new Date(updatingDate));
+      tableDataUpdate.classList.add('table__td');
+      row.appendChild(tableDataUpdate);
 
-    const trArray = Array.from(document.getElementsByTagName('tr')).slice(1);
+      // Контакты
+      const tableDataContacts = document.createElement('td');
+      tableDataContacts.classList.add('table__td');
+      row.appendChild(tableDataContacts);
+      let contactDiv;
 
-    trArray.forEach((row) => {
-      const firstCells = Array.from(row.getElementsByTagName('td'))[0];
-      firstCells.classList.add('table__td_id');
+      contactsList.forEach((contact) => {
+        const contactType = contact.type;
+        const contactValue = contact.value;
+
+        const formattedContact = `${contactType}: ${contactValue}`;
+
+        contactDiv = document.createElement('div');
+        contactDiv.innerHTML = formattedContact;
+        tableDataContacts.appendChild(contactDiv);
+      });
+
+      // Действия: изменить
+      const tableDataEdit = document.createElement('td');
+      tableDataEdit.classList.add('table__td');
+      row.appendChild(tableDataEdit);
+
+      const editContactBtn = document.createElement('button');
+      editContactBtn.classList.add('btn');
+      tableDataEdit.appendChild(editContactBtn);
+
+      const editBtnIcon = document.createElement('img');
+      editBtnIcon.src = './img/edit-icon.svg';
+      editContactBtn.appendChild(editBtnIcon);
+      editContactBtn.insertAdjacentText('beforeEnd', ' Изменить ');
+
+      // Действия: удалить
+      const tableDataDelete = document.createElement('td');
+      tableDataDelete.classList.add('table__td');
+      row.appendChild(tableDataDelete);
+
+      const deleteContactBtn = document.createElement('button');
+      deleteContactBtn.classList.add('btn');
+      tableDataDelete.appendChild(deleteContactBtn);
+
+      const deleteBtnIcon = document.createElement('img');
+      deleteBtnIcon.src = './img/cancel-icon.svg';
+      deleteContactBtn.appendChild(deleteBtnIcon);
+
+      deleteContactBtn.insertAdjacentText('beforeEnd', ' Удалить ');
     });
   }
 
