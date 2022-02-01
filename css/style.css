@@ -145,6 +145,66 @@ a {
   color: #b0b0b0;
 }
 
+.table__td_contacts {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  padding-bottom: 0;
+  padding-top: 10;
+  max-width: 150px;
+}
+
+.contact-div {
+  position: relative;
+  margin-right: 7px;
+  margin-bottom: 7px;
+}
+
+.contact-icon {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity .2s ease-in;
+}
+
+.contact-tooltip {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+  background-color: #333;
+  visibility: hidden;
+  transition: visibility .2s ease-in-out;
+}
+
+.contact-tooltip::after {
+  position: absolute;
+  content: '';
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 20px solid #333;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+.contact-icon:hover {
+  opacity: 1;
+}
+
+.contact-div:hover .contact-tooltip {
+  visibility: visible;
+}
+
+.contact-div:nth-child(5n) {
+  margin-right: 0;
+}
+
 .time {
   color: #b0b0b0;
 }

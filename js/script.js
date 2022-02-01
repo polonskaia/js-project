@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Функция создания таблицы =======================================================================================================================
   function createTable(array) {
     if (tableBody) {
       let newTableBody = document.createElement('tbody')
@@ -132,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Контакты
       const tableDataContacts = document.createElement('td');
-      tableDataContacts.classList.add('table__td');
+      tableDataContacts.classList.add('table__td', 'table__td_contacts');
       row.appendChild(tableDataContacts);
       let contactDiv;
 
@@ -140,11 +141,50 @@ document.addEventListener('DOMContentLoaded', () => {
         const contactType = contact.type;
         const contactValue = contact.value;
 
-        const formattedContact = `${contactType}: ${contactValue}`;
-
         contactDiv = document.createElement('div');
-        contactDiv.innerHTML = formattedContact;
+        contactDiv.classList.add('contact-div');
         tableDataContacts.appendChild(contactDiv);
+
+        const telIcon = document.createElement('img');
+        telIcon.src = './img/phone-icon.svg';
+        telIcon.classList.add('contact-icon');
+
+        const vkIcon = document.createElement('img');
+        vkIcon.src = './img/vk-icon.svg';
+        vkIcon.classList.add('contact-icon');
+
+        const facebookIcon = document.createElement('img');
+        facebookIcon.src = './img/fb-icon.svg';
+        facebookIcon.classList.add('contact-icon');
+
+        const emailIcon = document.createElement('img');
+        emailIcon.src = './img/mail-icon.svg';
+        emailIcon.classList.add('contact-icon');
+
+        const socialIcon = document.createElement('img');
+        socialIcon.src = './img/social-icon.svg';
+        socialIcon.classList.add('contact-icon');
+
+        const contactTooltip = document.createElement('div');
+        contactTooltip.classList.add('contact-tooltip');
+        contactTooltip.innerHTML = contactValue;
+
+        if (contactType === 'Телефон' || contactType === 'Доп. телефон') {
+          contactDiv.appendChild(contactTooltip);
+          contactDiv.appendChild(telIcon);
+        } else if (contactType === 'Vk') {
+          contactDiv.appendChild(contactTooltip);
+          contactDiv.appendChild(vkIcon);
+        } else if (contactType === 'Facebook') {
+          contactDiv.appendChild(contactTooltip);
+          contactDiv.appendChild(facebookIcon);
+        } else if (contactType === 'Email') {
+          contactDiv.appendChild(contactTooltip);
+          contactDiv.appendChild(emailIcon);
+        } else if (contactType === 'Другое') {
+          contactDiv.appendChild(contactTooltip);
+          contactDiv.appendChild(socialIcon);
+        }
       });
 
       // Действия: изменить
