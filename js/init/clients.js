@@ -103,6 +103,29 @@ const clients = [
         value: 'alexandrova@xyz.com'
       }
     ]
+  },
+  {
+    name: 'Николай',
+    surname: 'Васнецов',
+    lastName: 'Павлович',
+    contacts: [
+      {
+        type: 'Телефон',
+        value: '+71334668667'
+      },
+      {
+        type: 'Доп. телефон',
+        value: '+71134665443'
+      },
+      {
+        type: 'Facebook',
+        value: 'https://facebook.com/palych54'
+      },
+      {
+        type: 'Email',
+        value: 'kolya54@xyz.com'
+      }
+    ]
   }
 ];
 

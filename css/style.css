@@ -209,6 +209,23 @@ a {
   color: #b0b0b0;
 }
 
+.action-btn_icon {
+  opacity: 0.7;
+}
+
+.action-btn_edit,
+.action-btn_delete {
+  transition: color .2s ease-in;
+}
+
+.action-btn_edit:hover {
+  color: #9873ff;
+}
+
+.action-btn_delete:hover {
+  color: #f06a4d;
+}
+
 /* add client button */
 .clients__add-client {
   display: flex;
@@ -358,10 +375,10 @@ a {
 .add-new-client__save-btn {
   margin-bottom: 5px;
   padding: 13px 35px;
-  background-color: #9873ff;
-  color: #fff;
   font-weight: 600;
   font-size: 14px;
+  background-color: #9873ff;
+  color: #fff;
   transition: background-color .3s ease-in;
 }
 
@@ -420,6 +437,85 @@ a {
   background-image: url('../img/delete-contact.svg');
   background-repeat: no-repeat;
   background-position: center center;
+}
+
+/* delete client modal */
+.delete-client {
+  position: fixed;
+  overflow: auto;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .4s ease-in, visibility .4s ease-in;
+}
+
+.delete-client__modal {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+}
+
+.delete-client__modal-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 0 27px 0;
+  background-color: #fff;
+}
+
+.delete-client__close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.delete-client__heading {
+  margin: 0;
+  margin-bottom: 11px;
+  font-size: 18px;
+  line-height: 24px;
+  color: #333;
+}
+
+.delete-client__description {
+  margin: 0;
+  margin-bottom: 25px;
+  max-width: 275px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 19px;
+  color: #333;
+}
+
+.delete-client__btn {
+  margin-bottom: 5px;
+  padding: 14px 35px;
+  font-weight: 600;
+  font-size: 14px;
+  background-color: #9873ff;
+  color: #fff;
+  transition: background-color .3s ease-in;
+}
+
+.delete-client__btn:hover {
+  background-color: #b89eff;
+}
+
+.delete-client__btn:active {
+  background-color: #8052ff;
+}
+
+.delete-client__cancel-btn {
+  font-size: 12px;
+  color: #333;
+  text-decoration: underline;
 }
 
 .visible {

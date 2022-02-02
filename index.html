@@ -74,6 +74,8 @@
           </button>
         </div>
 
+
+        <!-- add-new-client-modal -->
         <div class="add-new-client" id="add-new-client">
           <div class="add-new-client__modal" id="add-new-client__modal">
             <div class="add-new-client__modal-container">
@@ -90,14 +92,11 @@
                 <div class="input-container">
                   <input class="input" type="text" id="surname" name="surname" placeholder=" ">
                   <label class="label" for="surname">Фамилия<span class="asterisk">*</span></label>
-
                   <input class="input" type="text" id="name" name="name" placeholder=" ">
                   <label class="label" for="name">Имя<span class="asterisk">*</span></label>
-
                   <input class="input" type="text" id="lastName" name="lastName" placeholder=" ">
                   <label class="label" for="lastName">Отчество</label>
                 </div>
-
                 <div class="add-contact-btn__container" id="add-contact-btn__container">
                   <button class="btn add-contact__btn" type="button" id="add-contact__btn">
                     <svg class="add-contact__icon" width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,11 +105,9 @@
                     Добавить контакт
                   </button>
                 </div>
-
                 <button class="btn add-new-client__save-btn" type="submit" id="add-new-client__save-btn">
                   Сохранить
                 </button>
-
                 <button class="btn add-new-client__cancel-btn" id="add-new-client__cancel-btn" type="button">
                   Отмена
                 </button>
@@ -118,6 +115,32 @@
             </div>
           </div>
         </div>
+
+          <!-- delete-client-modal -->
+          <div class="delete-client" id="delete-client">
+            <div class="delete-client__modal" id="delete-client__modal">
+              <div class="delete-client__modal-container">
+                <button class="btn delete-client__close-btn" id="delete-client__close-btn">
+                  <svg class="delete-client__close-icon" width="17" height="17" viewbox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.2333 1.73333L15.2666 0.766664L8.49991 7.53336L1.73324 0.766696L0.766576 1.73336L7.53324 8.50003L0.766603 15.2667L1.73327 16.2333L8.49991 9.46669L15.2666 16.2334L16.2332 15.2667L9.46657 8.50003L16.2333 1.73333Z" fill="#B0B0B0"/>
+                  </svg>
+                </button>
+                <h2 class="delete-client__heading">
+                  Удалить клиента
+                </h2>
+                <p class="delete-client__description">
+                  Вы действительно хотите удалить данного клиента?
+                </p>
+                <button class="btn delete-client__btn" id="delete-client__btn">
+                  Удалить
+                </button>
+                <button class="btn delete-client__cancel-btn" id="delete-client__cancel-btn" type="button">
+                  Отмена
+                </button>
+              </div>
+            </div>
+          </div>
+
       </div>
     </section>
   </main>

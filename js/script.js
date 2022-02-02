@@ -7,16 +7,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const addContactContainer = document.getElementById('add-contact-btn__container');
   const addContactBtn = document.getElementById('add-contact__btn');
   const saveNewClientBtn = document.getElementById('add-new-client__save-btn');
+
+  const deleteClientModalContainer = document.getElementById('delete-client');
+  const deleteClientModal = document.getElementById('delete-client__modal');
+  const closeDeleteClientModalButton = document.getElementById('delete-client__close-btn');
+  const cancelDeleteButton = document.getElementById('delete-client__cancel-btn');
+  const deleteClientBtn = document.getElementById('delete-client__btn');
+
   const searchInput = document.querySelector('.header__input');
   const buttonFullNameSort = document.querySelector('.th__btn_fullname');
   const buttonIDSort = document.querySelector('.th__btn_id');
   const buttonCreateSort = document.querySelector('.th__btn_create');
   const buttonUpdateSort = document.querySelector('.th__btn_update');
+
   let tableBody = document.querySelector('.table__tbody');
   let timeOutId;
   let sortedList;
 
   const contactsList = ['Телефон', 'Доп. телефон', 'Email', 'Vk', 'Facebook', 'Другое'];
+
+  function removeVisible(button, element) {
+    button.addEventListener('click', () => {
+      element.classList.remove('visible');
+    });
+  }
 
   addClientButton.addEventListener('click', () => {
     addNewClientModalContainer.classList.add('visible');
@@ -193,11 +207,12 @@ document.addEventListener('DOMContentLoaded', () => {
       row.appendChild(tableDataEdit);
 
       const editContactBtn = document.createElement('button');
-      editContactBtn.classList.add('btn');
+      editContactBtn.classList.add('btn', 'action-btn_edit');
       tableDataEdit.appendChild(editContactBtn);
 
       const editBtnIcon = document.createElement('img');
       editBtnIcon.src = './img/edit-icon.svg';
+      editBtnIcon.classList.add('action-btn_icon');
       editContactBtn.appendChild(editBtnIcon);
       editContactBtn.insertAdjacentText('beforeEnd', ' Изменить ');
 
@@ -207,14 +222,43 @@ document.addEventListener('DOMContentLoaded', () => {
       row.appendChild(tableDataDelete);
 
       const deleteContactBtn = document.createElement('button');
-      deleteContactBtn.classList.add('btn');
+      deleteContactBtn.classList.add('btn', 'action-btn_delete');
       tableDataDelete.appendChild(deleteContactBtn);
 
       const deleteBtnIcon = document.createElement('img');
       deleteBtnIcon.src = './img/cancel-icon.svg';
+      deleteBtnIcon.classList.add('action-btn_icon');
       deleteContactBtn.appendChild(deleteBtnIcon);
-
       deleteContactBtn.insertAdjacentText('beforeEnd', ' Удалить ');
+
+      deleteClient(deleteContactBtn, id);
+    });
+  }
+
+  function deleteClient(deleteButton, ID) {
+    deleteButton.addEventListener('click', () => {
+      deleteClientModalContainer.classList.add('visible');
+
+      deleteClientBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        deleteClientModalContainer.classList.remove('visible');
+
+        deleteClientFromServer(ID);
+      });
+    });
+
+    removeVisible(closeDeleteClientModalButton, deleteClientModalContainer);
+    removeVisible(cancelDeleteButton, deleteClientModalContainer);
+    removeVisible(deleteClientModalContainer, deleteClientModalContainer);
+
+    deleteClientModal.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+  }
+
+  async function deleteClientFromServer(id) {
+    await fetch(`http://localhost:3000/api/clients/${id}`, {
+      method: 'DELETE',
     });
   }
 
