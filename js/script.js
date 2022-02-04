@@ -17,6 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelDeleteButton = document.getElementById('delete-client__cancel-btn');
   const deleteClientBtn = document.getElementById('delete-client__btn');
 
+  const updateClientModalContainer = document.getElementById('update-client');
+  const updateClientModal = document.getElementById('update-client__modal');
+  const closeUpdateClientModalButton = document.getElementById('update-client__close-btn');
+  const buttonForDeleteClientInUpdateModal = document.getElementById('update-client__delete-btn');
+  const saveUpdateClientBtn = document.getElementById('update-client__save-btn');
+  const clientIdInUpdateModal = document.getElementById('client__id');
+
+  const updateClientSurnameInput = document.getElementById('update_surname');
+  const updateClientNameInput = document.getElementById('update_name');
+  const updateClientLastNameInput = document.getElementById('update_lastName');
+
   const searchInput = document.querySelector('.header__input');
   const buttonFullNameSort = document.querySelector('.th__btn_fullname');
   const buttonIDSort = document.querySelector('.th__btn_id');
@@ -70,10 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   deleteClientBtn.addEventListener('click', () => {
     deleteClientModalContainer.classList.remove('visible');
-    console.log(targetUser);
 
     deleteClientFromServer(targetUser);
   });
+
+  saveUpdateClientBtn.addEventListener('click', () => {
+    updateClientModalContainer.classList.remove('visible');
+
+    updateClientOnServer(targetUser);
+  })
 
   searchInput.addEventListener('input', () => {
     clearTimeout(timeOutId);
@@ -230,6 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
       editContactBtn.appendChild(editBtnIcon);
       editContactBtn.insertAdjacentText('beforeEnd', ' Изменить ');
 
+      addListenersToUpdateButton(editContactBtn);
+
       // Действия: удалить
       const tableDataDelete = document.createElement('td');
       tableDataDelete.classList.add('table__td');
@@ -245,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
       deleteContactBtn.appendChild(deleteBtnIcon);
       deleteContactBtn.insertAdjacentText('beforeEnd', ' Удалить ');
 
-      addListenersToDeleteClient(deleteContactBtn);
+      addListenersToDeleteButton(deleteContactBtn);
     });
   }
 
@@ -265,15 +283,15 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(data);
   }
 
-  function addListenersToDeleteClient(deleteButton) {
+  function addListenersToDeleteButton(deleteButton) {
     deleteButton.addEventListener('click', (event) => {
-      deleteClientModalContainer.classList.add('visible');
-
       const activeDeleteButton = event.target;
       const activeTableRow = activeDeleteButton.closest('tr');
       const activeID = activeTableRow.id;
 
       targetUser = activeID;
+
+      deleteClientModalContainer.classList.add('visible');
     });
 
     removeVisible(closeDeleteClientModalButton, deleteClientModalContainer);
@@ -288,6 +306,56 @@ document.addEventListener('DOMContentLoaded', () => {
   async function deleteClientFromServer(user) {
     await fetch(`http://localhost:3000/api/clients/${user}`, {
       method: 'DELETE',
+    });
+  }
+
+  function addListenersToUpdateButton(editButton) {
+    editButton.addEventListener('click', (event) => {
+      const activeUpdateButton = event.target;
+      const activeTableRow = activeUpdateButton.closest('tr');
+      const activeID = activeTableRow.id;
+
+      targetUser = activeID;
+
+      updateClientModalContainer.classList.add('visible');
+
+      getClientFullNameByID(targetUser);
+
+      clientIdInUpdateModal.innerHTML = `ID: ${targetUser}`;
+    });
+
+    removeVisible(closeUpdateClientModalButton, updateClientModalContainer);
+    removeVisible(updateClientModalContainer, updateClientModalContainer);
+
+    buttonForDeleteClientInUpdateModal.addEventListener('click', () => {
+      updateClientModalContainer.classList.remove('visible');
+      deleteClientModalContainer.classList.add('visible');
+    });
+
+    updateClientModal.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+  }
+
+  async function getClientFullNameByID(user) {
+    const clientById = await fetch(`http://localhost:3000/api/clients/${user}`);
+    const clientData = await clientById.json();
+    console.log(clientData);
+
+    updateClientNameInput.value = clientData.name;
+    updateClientLastNameInput.value = clientData.lastName;
+    updateClientSurnameInput.value = clientData.surname;
+  }
+
+  async function updateClientOnServer(user) {
+    await fetch(`http://localhost:3000/api/clients/${user}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: updateClientNameInput.value,
+        surname: updateClientSurnameInput.value,
+        lastName: updateClientLastNameInput.value
+      })
     });
   }
 
