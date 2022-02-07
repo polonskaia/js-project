@@ -205,6 +205,24 @@ a {
   margin-right: 0;
 }
 
+.hidden-contacts__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #9873ff;
+  font-weight: 600;
+  font-size: 10px;
+  color: #333;
+  transition: border .2s ease-in;
+}
+
+.hidden-contacts__button:hover {
+  border: 1px solid #8052ff;
+}
+
 .time {
   color: #b0b0b0;
 }
@@ -596,4 +614,9 @@ a {
 .visible {
   opacity: 1;
   visibility: visible;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
 }

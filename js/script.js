@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const buttonCreateSort = document.querySelector('.th__btn_create');
   const buttonUpdateSort = document.querySelector('.th__btn_update');
 
+
+
   let tableBody = document.querySelector('.table__tbody');
   let timeOutId;
   let sortedList;
@@ -264,7 +266,32 @@ document.addEventListener('DOMContentLoaded', () => {
       deleteContactBtn.insertAdjacentText('beforeEnd', ' Удалить ');
 
       addListenersToDeleteButton(deleteContactBtn);
+
+      const contactDivs = row.querySelectorAll('.contact-div');
+      console.log(contactDivs.length)
+
+      if (contactDivs.length > 5) {
+        for (i = 4; i < contactDivs.length; i++) {
+          contactDivs[i].style.display = 'none';
+        }
+        const hiddenContactsNumber = document.createElement('button');
+        hiddenContactsNumber.classList.add('hidden-contacts__button', 'btn');
+
+        hiddenContactsNumber.innerHTML = `+${contactDivs.length-4}`
+
+        tableDataContacts.appendChild(hiddenContactsNumber);
+
+        hiddenContactsNumber.addEventListener('click', () => {
+          contactDivs.forEach((div) => {
+            div.style.display = 'block';
+          });
+
+          hiddenContactsNumber.style.display = 'none';
+        })
+      }
+
     });
+
   }
 
   async function addClientToServer() {
