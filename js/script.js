@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const buttonForDeleteClientInUpdateModal = document.getElementById('update-client__delete-btn');
   const saveUpdateClientBtn = document.getElementById('update-client__save-btn');
   const clientIdInUpdateModal = document.getElementById('client__id');
+  const addContactButtonUpdate = document.getElementById('add-contact__btn_update');
+  const addContactContainerUpdate = document.getElementById('add-contact-btn__container_update');
 
   const updateClientSurnameInput = document.getElementById('update_surname');
   const updateClientNameInput = document.getElementById('update_name');
@@ -34,8 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const buttonCreateSort = document.querySelector('.th__btn_create');
   const buttonUpdateSort = document.querySelector('.th__btn_update');
 
-
-
   let tableBody = document.querySelector('.table__tbody');
   let timeOutId;
   let sortedList;
@@ -43,65 +43,140 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const contactsList = ['Телефон', 'Доп. телефон', 'Email', 'Vk', 'Facebook', 'Другое'];
 
-  function removeVisible(button, element) {
-    button.addEventListener('click', () => {
-      element.classList.remove('visible');
-    });
-  }
-
+  // Кнопка "Добавить клиента"
   addClientButton.addEventListener('click', () => {
     addNewClientModalContainer.classList.add('visible');
   });
 
+  // Кнопка закрытия окна добавления клиента
   closeNewClientFormButton.addEventListener('click', () => {
-    addNewClientModalContainer.classList.remove('visible');
+    removeVisible(closeNewClientFormButton, addNewClientModalContainer, addContactBtn);
   });
 
+  // Кнопка "Отмена"
   cancelAddButton.addEventListener('click', () => {
-    addNewClientModalContainer.classList.remove('visible');
+    removeVisible(cancelAddButton, addNewClientModalContainer, addContactBtn);
   });
 
+  // Область за модальным окном НОВОГО клиента
   addNewClientModalContainer.addEventListener('click', () => {
-    addNewClientModalContainer.classList.remove('visible');
+    removeVisible(addNewClientModalContainer, addNewClientModalContainer, addContactBtn);
   });
 
+  // Окно добавления нового клиента
   addNewClientModal.addEventListener('click', (event) => {
     event.stopPropagation();
   });
 
+  // Кнопка "Добавить контакт" в окне НОВОГО клиента
   addContactBtn.addEventListener('click', () => {
-    createContactSelect(addContactContainer, contactsList);
+    createContactSelect(addContactContainer, contactsList, addContactBtn);
+
+    addContactBtn.classList.add('add-contact__btn_margin');
+
+    hiddenAddContactButton(addContactBtn);
   });
 
+  // Кнопка "Сохранить" в окне НОВОГО клиента
   saveNewClientBtn.addEventListener('click', (event) => {
     event.preventDefault();
 
-    addClientToServer();
+    const client = {
+      name: addClientNameInput.value,
+      surname: addClientSurnameInput.value,
+      lastName: addClientLastNameInput.value,
+      contacts: getContacts()
+    }
 
-    addNewClientModalContainer.classList.remove('visible');
+    removeVisible(saveNewClientBtn, addNewClientModalContainer, addContactBtn);
+    addClientToServer(client);
   });
 
+  // Кнопка "Удалить" в окне удаления клиента
   deleteClientBtn.addEventListener('click', () => {
     deleteClientModalContainer.classList.remove('visible');
 
     deleteClientFromServer(targetUser);
   });
 
-  saveUpdateClientBtn.addEventListener('click', () => {
-    updateClientModalContainer.classList.remove('visible');
+  // Кнопка "Сохранить" в окне ИЗМЕНЕНИЯ клиента
+  saveUpdateClientBtn.addEventListener('click', (event) => {
+    event.preventDefault();
 
-    updateClientOnServer(targetUser);
+    const client = {
+      name: updateClientNameInput.value,
+      surname: updateClientSurnameInput.value,
+      lastName: updateClientLastNameInput.value,
+      contacts: getContacts()
+    }
+
+    removeVisible(saveUpdateClientBtn, updateClientModalContainer, addContactButtonUpdate);
+    updateClientOnServer(targetUser, client);
+  });
+
+  // Кнопка "Добавить контакт" в окне ИЗМЕНЕНИЯ клиента
+  addContactButtonUpdate.addEventListener('click', () => {
+    createContactSelect(addContactContainerUpdate, contactsList, addContactButtonUpdate);
+
+    addContactButtonUpdate.classList.add('add-contact__btn_margin');
+
+    hiddenAddContactButton(addContactButtonUpdate);
   })
 
+  // Инпут "Введите запрос"
   searchInput.addEventListener('input', () => {
     clearTimeout(timeOutId);
     timeOutId = setTimeout(searchClients, 300);
   });
 
-  function createContactSelect(container, contactsList) {
+  // Кнопки сортировки в таблице
+  buttonFullNameSort.addEventListener('click', () => {
+    sortClientsByFullName();
+  });
+
+  buttonIDSort.addEventListener('click', () => {
+    sortClients('id', buttonIDSort, false);
+  });
+
+  buttonCreateSort.addEventListener('click', () => {
+    sortClients('createdAt', buttonCreateSort, true);
+  });
+
+  buttonUpdateSort.addEventListener('click', () => {
+    sortClients('updatedAt', buttonUpdateSort, true);
+  });
+
+  function hiddenAddContactButton(button) {
+    const contactContainers = document.querySelectorAll('.contact-container');
+
+    if (contactContainers.length === 10) {
+      button.classList.add('hidden');
+    }
+  }
+
+  function removeVisible(button, element, addContactBtn) {
+    button.addEventListener('click', () => {
+      element.classList.remove('visible');
+
+      const contactContainers = document.querySelectorAll('.contact-container');
+
+      contactContainers.forEach((contact) => {
+        contact.remove();
+      });
+
+      addContactBtn.classList.remove('add-contact__btn_margin');
+      addContactBtn.classList.remove('hidden');
+    });
+  }
+
+  // Функция создания контакта в модальном окне ===============================================================================================
+  function createContactSelect(container, contactsList, contactBtn, defaultType="Телефон") {
     const selectAndInputContainer = document.createElement('div');
     selectAndInputContainer.classList.add('contact-container');
-    container.insertBefore(selectAndInputContainer, addContactBtn);
+
+    container.insertBefore(selectAndInputContainer, contactBtn);
+
+    const activeIndex = contactsList.indexOf(defaultType);
 
     const contactSelect = document.createElement('select');
     contactSelect.classList.add('selectCustom')
@@ -114,6 +189,10 @@ document.addEventListener('DOMContentLoaded', () => {
       contactSelect.appendChild(contactOption);
     });
 
+    if (activeIndex > 0) {
+      contactSelect[activeIndex].selected = true;
+    }
+
     const contactInput = document.createElement('input');
     contactInput.classList.add('contact-input');
     selectAndInputContainer.appendChild(contactInput);
@@ -125,12 +204,21 @@ document.addEventListener('DOMContentLoaded', () => {
     selectAndInputContainer.appendChild(deleteContactBtn);
   }
 
-  function getOptionValue() {
-    const selects = document.querySelectorAll('.selectCustom');
-    selects.forEach((s) => {
-      const optionValue = s.options[s.selectedIndex].value;
-      console.log(optionValue);
-    });
+  // Функция получения типа и значения контакта из селекта и инпута для отправки на сервер ======================================================
+  function getContacts() {
+    const contactDivs = document.querySelectorAll('.contact-container');
+    let contacts = [];
+    contactDivs.forEach(cd => {
+      const cs = cd.querySelector("select")
+      const input = cd.querySelector("input")
+      contacts.push ({ type: cs.options[cs.selectedIndex].value, value: input.value})
+      /*
+      const cType = cs.options[cs.selectedIndex].value
+      if cType == 'Tele' {}
+      validatePhone(input.value)
+      */
+    })
+    return contacts;
   }
 
   // Функция создания таблицы =======================================================================================================================
@@ -267,49 +355,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
       addListenersToDeleteButton(deleteContactBtn);
 
-      const contactDivs = row.querySelectorAll('.contact-div');
-      console.log(contactDivs.length)
+      hideContacts(row, tableDataContacts);
+    });
+  }
+
+  // Функция скрытия иконок контактов в таблице ===================================================================================================
+  function hideContacts(row, tableData) {
+    const contactDivs = row.querySelectorAll('.contact-div');
 
       if (contactDivs.length > 5) {
         for (i = 4; i < contactDivs.length; i++) {
-          contactDivs[i].style.display = 'none';
+          contactDivs[i].classList.add('hidden');
         }
         const hiddenContactsNumber = document.createElement('button');
         hiddenContactsNumber.classList.add('hidden-contacts__button', 'btn');
 
         hiddenContactsNumber.innerHTML = `+${contactDivs.length-4}`
 
-        tableDataContacts.appendChild(hiddenContactsNumber);
+        tableData.appendChild(hiddenContactsNumber);
 
         hiddenContactsNumber.addEventListener('click', () => {
           contactDivs.forEach((div) => {
-            div.style.display = 'block';
+            div.classList.remove('hidden');
           });
 
-          hiddenContactsNumber.style.display = 'none';
+          hiddenContactsNumber.classList.add('hidden');
         })
       }
-
-    });
-
   }
 
-  async function addClientToServer() {
-    const response = await fetch('http://localhost:3000/api/clients', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(
-        {
-          name: addClientNameInput.value,
-          surname: addClientSurnameInput.value,
-          lastName: addClientLastNameInput.value
-        }
-      )
-    });
-    const data = await response.json();
-    console.log(data);
-  }
-
+  // Обработчики, связанные с удалением клиента ===================================================================================================
   function addListenersToDeleteButton(deleteButton) {
     deleteButton.addEventListener('click', (event) => {
       const activeDeleteButton = event.target;
@@ -330,12 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  async function deleteClientFromServer(user) {
-    await fetch(`http://localhost:3000/api/clients/${user}`, {
-      method: 'DELETE',
-    });
-  }
-
+  // Обработчики, связаннеые с изменением клиента ==================================================================================================
   function addListenersToUpdateButton(editButton) {
     editButton.addEventListener('click', (event) => {
       const activeUpdateButton = event.target;
@@ -346,13 +416,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       updateClientModalContainer.classList.add('visible');
 
-      getClientFullNameByID(targetUser);
+      fetchClientInfoByID(targetUser);
 
       clientIdInUpdateModal.innerHTML = `ID: ${targetUser}`;
     });
 
-    removeVisible(closeUpdateClientModalButton, updateClientModalContainer);
-    removeVisible(updateClientModalContainer, updateClientModalContainer);
+    removeVisible(closeUpdateClientModalButton, updateClientModalContainer, addContactButtonUpdate);
+    removeVisible(updateClientModalContainer, updateClientModalContainer, addContactButtonUpdate);
 
     buttonForDeleteClientInUpdateModal.addEventListener('click', () => {
       updateClientModalContainer.classList.remove('visible');
@@ -361,28 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateClientModal.addEventListener('click', (event) => {
       event.stopPropagation();
-    });
-  }
-
-  async function getClientFullNameByID(user) {
-    const clientById = await fetch(`http://localhost:3000/api/clients/${user}`);
-    const clientData = await clientById.json();
-    console.log(clientData);
-
-    updateClientNameInput.value = clientData.name;
-    updateClientLastNameInput.value = clientData.lastName;
-    updateClientSurnameInput.value = clientData.surname;
-  }
-
-  async function updateClientOnServer(user) {
-    await fetch(`http://localhost:3000/api/clients/${user}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: updateClientNameInput.value,
-        surname: updateClientSurnameInput.value,
-        lastName: updateClientLastNameInput.value
-      })
     });
   }
 
@@ -410,18 +458,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${[day, month, date.getFullYear()].join('.')} <span class="time">${hours}:${minutes}</span>`;
   }
 
-  // Функция поиска клиентов (фильтрация)
-  async function searchClients() {
-    const searchString = searchInput.value;
-    const searchClients = await fetch(`http://localhost:3000/api/clients?search=${searchString}`);
-    const searchClientsData = await searchClients.json();
-    console.log(searchClientsData);
-
-    createTable(searchClientsData);
-
-    return searchClientsData;
-  }
-
   // Сортировка
   function sortByField(field) {
     return (a, b) => a[field] > b[field] ? 1 : -1;
@@ -446,11 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
     createTable(sortedList);
   }
 
-  buttonFullNameSort.addEventListener('click', () => {
-    sortClientsByFullName();
-  });
-
-  // Функция сортировки клиентов
+  // Функция сортировки клиентов по остальным полям
   async function sortClients(field, button, boolean) {
     let clientsList = await searchClients();
 
@@ -465,17 +497,70 @@ document.addEventListener('DOMContentLoaded', () => {
     createTable(sortedList);
   }
 
-  buttonIDSort.addEventListener('click', () => {
-    sortClients('id', buttonIDSort, false);
-  });
+  // Функция поиска клиентов (фильтрация)
+  async function searchClients() {
+    const searchString = searchInput.value;
+    const searchClients = await fetch(`http://localhost:3000/api/clients?search=${searchString}`);
+    const searchClientsData = await searchClients.json();
+    console.log(searchClientsData);
 
-  buttonCreateSort.addEventListener('click', () => {
-    sortClients('createdAt', buttonCreateSort, true);
-  });
+    createTable(searchClientsData);
 
-  buttonUpdateSort.addEventListener('click', () => {
-    sortClients('updatedAt', buttonUpdateSort, true);
-  });
+    return searchClientsData;
+  }
+
+  // Получение информации о клиенте с сервера
+  async function fetchClientInfoByID(user) {
+    const clientById = await fetch(`http://localhost:3000/api/clients/${user}`);
+    const clientData = await clientById.json();
+
+    updateClientNameInput.value = clientData.name;
+    updateClientLastNameInput.value = clientData.lastName;
+    updateClientSurnameInput.value = clientData.surname;
+
+    const contacts = clientData.contacts;
+
+    for (let i = 0; i < contacts.length; i++) {
+      createContactSelect(addContactContainerUpdate, contactsList, addContactButtonUpdate, contacts[i].type);
+
+      addContactButtonUpdate.classList.add('add-contact__btn_margin');
+    }
+
+    const contactInputs = document.querySelectorAll('.contact-input');
+
+    for (let i = 0; i < contacts.length; i++) {
+      contactInputs[i].value = contacts[i].value;
+    }
+
+    hiddenAddContactButton(addContactButtonUpdate);
+  }
+
+  // Функция отправки клиента на сервер (POST)
+  async function addClientToServer(client) {
+    const response = await fetch('http://localhost:3000/api/clients', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(client)
+    });
+    const data = await response.json();
+    console.log(data);
+  }
+
+  // Функция изменения клиента на сервере (PATCH)
+  async function updateClientOnServer(user, client) {
+    await fetch(`http://localhost:3000/api/clients/${user}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(client)
+    });
+  }
+
+  // Функция удаления клиента с сервера (DELETE)
+  async function deleteClientFromServer(user) {
+    await fetch(`http://localhost:3000/api/clients/${user}`, {
+      method: 'DELETE',
+    });
+  }
 
   async function getClientsFromServer() {
     const clients = await fetch('http://localhost:3000/api/clients');

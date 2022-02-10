@@ -146,6 +146,7 @@ a {
 }
 
 .table__td_contacts {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 10px;
@@ -158,6 +159,7 @@ a {
   position: relative;
   margin-right: 7px;
   margin-bottom: 7px;
+  transition: opacity .3s ease-in, visibility .3s ease-in;
 }
 
 .contact-icon {
@@ -302,7 +304,7 @@ a {
 .add-new-client__modal {
   position: absolute;
   left: 50%;
-  top: 45%;
+  top: 50%;
   transform: translate(-50%, -50%);
   width: 450px;
 }
@@ -375,6 +377,8 @@ a {
   margin-bottom: 25px;
   padding-top: 8px;
   padding-bottom: 8px;
+  max-height: 260px;
+  overflow-y: auto;
   width: 100%;
   text-align: center;
   background-color: #f4f3f6;
@@ -384,6 +388,11 @@ a {
   font-weight: 600;
   font-size: 14px;
   color: #333;
+}
+
+.add-contact__btn_margin {
+  margin-top: 20px;
+  margin-bottom: 15px;
 }
 
 .add-contact__icon {
@@ -414,6 +423,10 @@ a {
   text-decoration: underline;
 }
 
+.contact-container {
+  position: relative;
+}
+
 .contact-container:not(:first-child) {
   margin-top: 15px;
 }
@@ -428,7 +441,6 @@ a {
 }
 
 .contact-input {
-  position: relative;
   padding: 9px 0 10px 12px;
   width: 279px;
   border: 1px solid #c8c5d1;
@@ -447,7 +459,7 @@ a {
 
 .delete-contact-btn {
   position: absolute;
-  right: 27px;
+  right: 10px;
   width: 27px;
   height: 37px;
   border: 1px solid #c8c5d1;
@@ -589,6 +601,8 @@ a {
   margin-bottom: 25px;
   padding-top: 8px;
   padding-bottom: 8px;
+  max-height: 260px;
+  overflow-y: auto;
   width: 100%;
   text-align: center;
   background-color: #f4f3f6;
@@ -619,4 +633,5 @@ a {
 .hidden {
   opacity: 0;
   visibility: hidden;
+  position: absolute;
 }
