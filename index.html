@@ -77,112 +77,109 @@
 
 
         <!-- add new client modal -->
-        <div class="add-new-client" id="add-new-client">
-          <div class="add-new-client__modal" id="add-new-client__modal">
-            <div class="add-new-client__modal-container">
-              <button class="btn add-new-client__close-btn" id="add-new-client__close-btn">
-                <svg class="add-new-client__close-icon" width="17" height="17" viewbox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div class="add-new-client" id="add-new-client"></div>
+        <div class="add-new-client__modal" id="add-new-client__modal">
+          <div class="add-new-client__modal-container">
+            <button class="btn add-new-client__close-btn" id="add-new-client__close-btn">
+              <svg class="add-new-client__close-icon" width="17" height="17" viewbox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16.2333 1.73333L15.2666 0.766664L8.49991 7.53336L1.73324 0.766696L0.766576 1.73336L7.53324 8.50003L0.766603 15.2667L1.73327 16.2333L8.49991 9.46669L15.2666 16.2334L16.2332 15.2667L9.46657 8.50003L16.2333 1.73333Z" fill="#B0B0B0"/>
+              </svg>
+            </button>
+            <h2 class="add-new-client__heading">
+              Новый клиент
+            </h2>
+            <!-- form -->
+            <form class="add-new-client__form">
+              <div class="input-container">
+                <input class="input" type="text" id="surname" name="surname" placeholder=" ">
+                <label class="label" for="surname">Фамилия<span class="asterisk">*</span></label>
+                <input class="input" type="text" id="name" name="name" placeholder=" ">
+                <label class="label" for="name">Имя<span class="asterisk">*</span></label>
+                <input class="input" type="text" id="lastName" name="lastName" placeholder=" ">
+                <label class="label" for="lastName">Отчество</label>
+              </div>
+              <div class="add-contact-btn__container" id="add-contact-btn__container">
+                <button class="btn add-contact__btn" type="button" id="add-contact__btn">
+                  <svg class="add-contact__icon" width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.00001 4.66659C7.63334 4.66659 7.33334 4.96659 7.33334 5.33325V7.33325H5.33334C4.96668 7.33325 4.66668 7.63325 4.66668 7.99992C4.66668 8.36659 4.96668 8.66659 5.33334 8.66659H7.33334V10.6666C7.33334 11.0333 7.63334 11.3333 8.00001 11.3333C8.36668 11.3333 8.66668 11.0333 8.66668 10.6666V8.66659H10.6667C11.0333 8.66659 11.3333 8.36659 11.3333 7.99992C11.3333 7.63325 11.0333 7.33325 10.6667 7.33325H8.66668V5.33325C8.66668 4.96659 8.36668 4.66659 8.00001 4.66659ZM8.00001 1.33325C4.32001 1.33325 1.33334 4.31992 1.33334 7.99992C1.33334 11.6799 4.32001 14.6666 8.00001 14.6666C11.68 14.6666 14.6667 11.6799 14.6667 7.99992C14.6667 4.31992 11.68 1.33325 8.00001 1.33325ZM8.00001 13.3333C5.06001 13.3333 2.66668 10.9399 2.66668 7.99992C2.66668 5.05992 5.06001 2.66659 8.00001 2.66659C10.94 2.66659 13.3333 5.05992 13.3333 7.99992C13.3333 10.9399 10.94 13.3333 8.00001 13.3333Z" fill="#9873FF"/>
+                  </svg>
+                  Добавить контакт
+                </button>
+              </div>
+              <button class="btn add-new-client__save-btn" type="submit" id="add-new-client__save-btn">
+                Сохранить
+              </button>
+              <button class="btn add-new-client__cancel-btn" id="add-new-client__cancel-btn" type="button">
+                Отмена
+              </button>
+            </form>
+          </div>
+        </div>
+
+          <!-- delete client modal -->
+          <div class="delete-client" id="delete-client"></div>
+          <div class="delete-client__modal" id="delete-client__modal">
+            <div class="delete-client__modal-container">
+              <button class="btn delete-client__close-btn" id="delete-client__close-btn">
+                <svg class="delete-client__close-icon" width="17" height="17" viewbox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M16.2333 1.73333L15.2666 0.766664L8.49991 7.53336L1.73324 0.766696L0.766576 1.73336L7.53324 8.50003L0.766603 15.2667L1.73327 16.2333L8.49991 9.46669L15.2666 16.2334L16.2332 15.2667L9.46657 8.50003L16.2333 1.73333Z" fill="#B0B0B0"/>
                 </svg>
               </button>
-              <h2 class="add-new-client__heading">
-                Новый клиент
+              <h2 class="delete-client__heading">
+                Удалить клиента
               </h2>
+              <p class="delete-client__description">
+                Вы действительно хотите удалить данного клиента?
+              </p>
+              <button class="btn delete-client__btn" id="delete-client__btn">
+                Удалить
+              </button>
+              <button class="btn delete-client__cancel-btn" id="delete-client__cancel-btn">
+                Отмена
+              </button>
+            </div>
+          </div>
+
+          <!-- update client modal -->
+          <div class="update-client" id="update-client"></div>
+          <div class="update-client__modal" id="update-client__modal">
+            <div class="update-client__modal-container">
+              <button class="btn update-client__close-btn" id="update-client__close-btn">
+                <svg class="delete-client__close-icon" width="17" height="17" viewbox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M16.2333 1.73333L15.2666 0.766664L8.49991 7.53336L1.73324 0.766696L0.766576 1.73336L7.53324 8.50003L0.766603 15.2667L1.73327 16.2333L8.49991 9.46669L15.2666 16.2334L16.2332 15.2667L9.46657 8.50003L16.2333 1.73333Z" fill="#B0B0B0"/>
+                </svg>
+              </button>
+              <div class="update-client__heading">
+                <h2 class="update-client__heading-text">
+                  Изменить данные
+                </h2>
+                <span class="client__id" id="client__id"></span>
+              </div>
               <!-- form -->
-              <form class="add-new-client__form">
-                <div class="input-container">
-                  <input class="input" type="text" id="surname" name="surname" placeholder=" ">
-                  <label class="label" for="surname">Фамилия<span class="asterisk">*</span></label>
-                  <input class="input" type="text" id="name" name="name" placeholder=" ">
-                  <label class="label" for="name">Имя<span class="asterisk">*</span></label>
-                  <input class="input" type="text" id="lastName" name="lastName" placeholder=" ">
-                  <label class="label" for="lastName">Отчество</label>
+              <form class="update-client__form">
+                <div class="update__input-container">
+                  <input class="input" type="text" id="update_surname" name="surname" placeholder=" ">
+                  <label class="label" for="update_surname">Фамилия<span class="asterisk">*</span></label>
+                  <input class="input" type="text" id="update_name" name="name" placeholder=" ">
+                  <label class="label" for="update_name">Имя<span class="asterisk">*</span></label>
+                  <input class="input" type="text" id="update_lastName" name="lastName" placeholder=" ">
+                  <label class="label" for="update_lastName">Отчество</label>
                 </div>
-                <div class="add-contact-btn__container" id="add-contact-btn__container">
-                  <button class="btn add-contact__btn" type="button" id="add-contact__btn">
+                <div class="add-contact-btn__container_update" id="add-contact-btn__container_update">
+                  <button class="btn add-contact__btn" type="button" id="add-contact__btn_update">
                     <svg class="add-contact__icon" width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M8.00001 4.66659C7.63334 4.66659 7.33334 4.96659 7.33334 5.33325V7.33325H5.33334C4.96668 7.33325 4.66668 7.63325 4.66668 7.99992C4.66668 8.36659 4.96668 8.66659 5.33334 8.66659H7.33334V10.6666C7.33334 11.0333 7.63334 11.3333 8.00001 11.3333C8.36668 11.3333 8.66668 11.0333 8.66668 10.6666V8.66659H10.6667C11.0333 8.66659 11.3333 8.36659 11.3333 7.99992C11.3333 7.63325 11.0333 7.33325 10.6667 7.33325H8.66668V5.33325C8.66668 4.96659 8.36668 4.66659 8.00001 4.66659ZM8.00001 1.33325C4.32001 1.33325 1.33334 4.31992 1.33334 7.99992C1.33334 11.6799 4.32001 14.6666 8.00001 14.6666C11.68 14.6666 14.6667 11.6799 14.6667 7.99992C14.6667 4.31992 11.68 1.33325 8.00001 1.33325ZM8.00001 13.3333C5.06001 13.3333 2.66668 10.9399 2.66668 7.99992C2.66668 5.05992 5.06001 2.66659 8.00001 2.66659C10.94 2.66659 13.3333 5.05992 13.3333 7.99992C13.3333 10.9399 10.94 13.3333 8.00001 13.3333Z" fill="#9873FF"/>
                     </svg>
                     Добавить контакт
                   </button>
                 </div>
-                <button class="btn add-new-client__save-btn" type="submit" id="add-new-client__save-btn">
+                <button class="btn add-new-client__save-btn" type="submit" id="update-client__save-btn">
                   Сохранить
                 </button>
-                <button class="btn add-new-client__cancel-btn" id="add-new-client__cancel-btn" type="button">
-                  Отмена
+                <button class="btn add-new-client__cancel-btn" id="update-client__delete-btn" type="button">
+                  Удалить клиента
                 </button>
               </form>
-            </div>
-          </div>
-        </div>
-
-          <!-- delete client modal -->
-          <div class="delete-client" id="delete-client">
-            <div class="delete-client__modal" id="delete-client__modal">
-              <div class="delete-client__modal-container">
-                <button class="btn delete-client__close-btn" id="delete-client__close-btn">
-                  <svg class="delete-client__close-icon" width="17" height="17" viewbox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.2333 1.73333L15.2666 0.766664L8.49991 7.53336L1.73324 0.766696L0.766576 1.73336L7.53324 8.50003L0.766603 15.2667L1.73327 16.2333L8.49991 9.46669L15.2666 16.2334L16.2332 15.2667L9.46657 8.50003L16.2333 1.73333Z" fill="#B0B0B0"/>
-                  </svg>
-                </button>
-                <h2 class="delete-client__heading">
-                  Удалить клиента
-                </h2>
-                <p class="delete-client__description">
-                  Вы действительно хотите удалить данного клиента?
-                </p>
-                <button class="btn delete-client__btn" id="delete-client__btn">
-                  Удалить
-                </button>
-                <button class="btn delete-client__cancel-btn" id="delete-client__cancel-btn">
-                  Отмена
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- update client modal -->
-          <div class="update-client" id="update-client">
-            <div class="update-client__modal" id="update-client__modal">
-              <div class="update-client__modal-container">
-                <button class="btn update-client__close-btn" id="update-client__close-btn">
-                  <svg class="delete-client__close-icon" width="17" height="17" viewbox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.2333 1.73333L15.2666 0.766664L8.49991 7.53336L1.73324 0.766696L0.766576 1.73336L7.53324 8.50003L0.766603 15.2667L1.73327 16.2333L8.49991 9.46669L15.2666 16.2334L16.2332 15.2667L9.46657 8.50003L16.2333 1.73333Z" fill="#B0B0B0"/>
-                  </svg>
-                </button>
-                <div class="update-client__heading">
-                  <h2 class="update-client__heading-text">
-                    Изменить данные
-                  </h2>
-                  <span class="client__id" id="client__id"></span>
-                </div>
-                <!-- form -->
-                <form class="update-client__form">
-                  <div class="update__input-container">
-                    <input class="input" type="text" id="update_surname" name="surname" placeholder=" ">
-                    <label class="label" for="update_surname">Фамилия<span class="asterisk">*</span></label>
-                    <input class="input" type="text" id="update_name" name="name" placeholder=" ">
-                    <label class="label" for="update_name">Имя<span class="asterisk">*</span></label>
-                    <input class="input" type="text" id="update_lastName" name="lastName" placeholder=" ">
-                    <label class="label" for="update_lastName">Отчество</label>
-                  </div>
-                  <div class="add-contact-btn__container_update" id="add-contact-btn__container_update">
-                    <button class="btn add-contact__btn" type="button" id="add-contact__btn_update">
-                      <svg class="add-contact__icon" width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8.00001 4.66659C7.63334 4.66659 7.33334 4.96659 7.33334 5.33325V7.33325H5.33334C4.96668 7.33325 4.66668 7.63325 4.66668 7.99992C4.66668 8.36659 4.96668 8.66659 5.33334 8.66659H7.33334V10.6666C7.33334 11.0333 7.63334 11.3333 8.00001 11.3333C8.36668 11.3333 8.66668 11.0333 8.66668 10.6666V8.66659H10.6667C11.0333 8.66659 11.3333 8.36659 11.3333 7.99992C11.3333 7.63325 11.0333 7.33325 10.6667 7.33325H8.66668V5.33325C8.66668 4.96659 8.36668 4.66659 8.00001 4.66659ZM8.00001 1.33325C4.32001 1.33325 1.33334 4.31992 1.33334 7.99992C1.33334 11.6799 4.32001 14.6666 8.00001 14.6666C11.68 14.6666 14.6667 11.6799 14.6667 7.99992C14.6667 4.31992 11.68 1.33325 8.00001 1.33325ZM8.00001 13.3333C5.06001 13.3333 2.66668 10.9399 2.66668 7.99992C2.66668 5.05992 5.06001 2.66659 8.00001 2.66659C10.94 2.66659 13.3333 5.05992 13.3333 7.99992C13.3333 10.9399 10.94 13.3333 8.00001 13.3333Z" fill="#9873FF"/>
-                      </svg>
-                      Добавить контакт
-                    </button>
-                  </div>
-                  <button class="btn add-new-client__save-btn" type="submit" id="update-client__save-btn">
-                    Сохранить
-                  </button>
-                  <button class="btn add-new-client__cancel-btn" id="update-client__delete-btn" type="button">
-                    Удалить клиента
-                  </button>
-                </form>
-              </div>
             </div>
           </div>
       </div>

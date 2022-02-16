@@ -46,26 +46,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Кнопка "Добавить клиента"
   addClientButton.addEventListener('click', () => {
     addNewClientModalContainer.classList.add('visible');
+    addNewClientModal.classList.add('visible');
   });
 
   // Кнопка закрытия окна добавления клиента
   closeNewClientFormButton.addEventListener('click', () => {
-    removeVisible(closeNewClientFormButton, addNewClientModalContainer, addContactBtn);
+    removeVisible(closeNewClientFormButton, addNewClientModal, addNewClientModalContainer, addContactBtn);
   });
 
   // Кнопка "Отмена"
   cancelAddButton.addEventListener('click', () => {
-    removeVisible(cancelAddButton, addNewClientModalContainer, addContactBtn);
+    removeVisible(cancelAddButton, addNewClientModal, addNewClientModalContainer, addContactBtn);
   });
 
   // Область за модальным окном НОВОГО клиента
   addNewClientModalContainer.addEventListener('click', () => {
-    removeVisible(addNewClientModalContainer, addNewClientModalContainer, addContactBtn);
-  });
-
-  // Окно добавления нового клиента
-  addNewClientModal.addEventListener('click', (event) => {
-    event.stopPropagation();
+    removeVisible(addNewClientModalContainer, addNewClientModal, addNewClientModalContainer, addContactBtn);
   });
 
   // Кнопка "Добавить контакт" в окне НОВОГО клиента
@@ -75,6 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
     addContactBtn.classList.add('add-contact__btn_margin');
 
     hiddenAddContactButton(addContactBtn);
+
+    const deleteContactBtns = document.querySelectorAll('.delete-contact-btn');
+
+    deleteContactBtnsListener(deleteContactBtns, addContactBtn);
   });
 
   // Кнопка "Сохранить" в окне НОВОГО клиента
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       contacts: getContacts()
     }
 
-    removeVisible(saveNewClientBtn, addNewClientModalContainer, addContactBtn);
+    removeVisible(saveNewClientBtn, addNewClientModal, addNewClientModalContainer, addContactBtn);
     addClientToServer(client);
   });
 
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
       contacts: getContacts()
     }
 
-    removeVisible(saveUpdateClientBtn, updateClientModalContainer, addContactButtonUpdate);
+    removeVisible(saveUpdateClientBtn, updateClientModal, updateClientModalContainer, addContactButtonUpdate);
     updateClientOnServer(targetUser, client);
   });
 
@@ -121,6 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
     addContactButtonUpdate.classList.add('add-contact__btn_margin');
 
     hiddenAddContactButton(addContactButtonUpdate);
+
+    const deleteContactBtns = document.querySelectorAll('.delete-contact-btn');
+    console.log(deleteContactBtns);
+
+    deleteContactBtnsListener(deleteContactBtns, addContactButtonUpdate);
   })
 
   // Инпут "Введите запрос"
@@ -154,9 +159,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function removeVisible(button, element, addContactBtn) {
+  function deleteContactBtnsListener(deleteContactBtns, addContactBtn) {
+    deleteContactBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const activeDeleteContactBtn = e.currentTarget;
+        console.log(activeDeleteContactBtn);
+        const activeContactContainer = activeDeleteContactBtn.closest('div');
+        activeContactContainer.remove();
+
+        const deleteContactBtns = document.querySelectorAll('.delete-contact-btn');
+        if (deleteContactBtns.length < 10 && addContactBtn.classList.contains('hidden')) {
+          addContactBtn.classList.remove('hidden');
+        }
+        if (deleteContactBtns.length === 0) {
+          addContactBtn.classList.remove('add-contact__btn_margin');
+        }
+      });
+    });
+  }
+
+  function removeVisible(button, element, background, addContactBtn) {
     button.addEventListener('click', () => {
       element.classList.remove('visible');
+      background.classList.remove('visible');
 
       const contactContainers = document.querySelectorAll('.contact-container');
 
@@ -173,35 +198,93 @@ document.addEventListener('DOMContentLoaded', () => {
   function createContactSelect(container, contactsList, contactBtn, defaultType="Телефон") {
     const selectAndInputContainer = document.createElement('div');
     selectAndInputContainer.classList.add('contact-container');
-
     container.insertBefore(selectAndInputContainer, contactBtn);
 
     const activeIndex = contactsList.indexOf(defaultType);
 
-    const contactSelect = document.createElement('select');
-    contactSelect.classList.add('selectCustom')
-    selectAndInputContainer.appendChild(contactSelect);
+    const select = createCustomDropdownSelect(contactsList, selectAndInputContainer);
 
-    contactsList.forEach((item) => {
-      const contactOption = document.createElement('option');
-      contactOption.innerHTML = item;
-      contactOption.setAttribute('value', item);
-      contactSelect.appendChild(contactOption);
-    });
+    const selectButton = select.querySelector('.custom-select__button');
+    const selectList = select.querySelector('.custom-select__list');
+    const selectInput = select.querySelector('.custom-select__input');
 
     if (activeIndex > 0) {
-      contactSelect[activeIndex].selected = true;
+      selectButton.innerText = selectList.childNodes[activeIndex].innerHTML;
+      selectInput.value = selectList.childNodes[activeIndex].dataset.value;
     }
 
     const contactInput = document.createElement('input');
     contactInput.classList.add('contact-input');
     selectAndInputContainer.appendChild(contactInput);
-    contactInput.placeholder = 'Введите данные контакта';
 
+    contactInput.placeholder = 'Введите данные контакта';
     const deleteContactBtn = document.createElement('button');
     deleteContactBtn.classList.add('delete-contact-btn', 'btn');
     deleteContactBtn.type = 'button';
     selectAndInputContainer.appendChild(deleteContactBtn);
+  }
+
+  function createCustomDropdownSelect(contactsList, selectAndInputContainer, defaultType="Телефон") {
+    const customSelectWrapper = document.createElement('div');
+    customSelectWrapper.classList.add('select-wrapper');
+    selectAndInputContainer.append(customSelectWrapper);
+
+    const customSelectButton = document.createElement('button');
+    customSelectButton.type = 'button';
+    customSelectButton.classList.add('custom-select__button');
+    customSelectButton.innerText = defaultType;
+
+    const customSelectList = document.createElement('ul');
+    customSelectList.classList.add('custom-select__list');
+    customSelectWrapper.appendChild(customSelectList);
+
+    customSelectButton.addEventListener('click', () => {
+      customSelectList.classList.toggle('custom-select__list_visible');
+      customSelectButton.classList.toggle('custom-select__button_is-open');
+    });
+
+    customSelectWrapper.appendChild(customSelectButton);
+
+    const customSelectHiddenInput = document.createElement('input');
+    customSelectHiddenInput.setAttribute('type', 'text');
+    customSelectHiddenInput.name = 'select-category';
+    customSelectHiddenInput.setAttribute('value', defaultType);
+    customSelectHiddenInput.classList.add('custom-select__input');
+
+    contactsList.forEach((item) => {
+      const customSelectOption = document.createElement('li');
+      customSelectOption.classList.add('custom-select__item');
+      customSelectOption.innerHTML = item;
+      customSelectOption.setAttribute('data-value', item);
+
+      customSelectOption.addEventListener('click', (e) => {
+        e.stopPropagation();
+        customSelectButton.innerText = e.target.innerText;
+        customSelectHiddenInput.value = e.target.dataset.value;
+        customSelectList.classList.remove('custom-select__list_visible');
+        customSelectButton.classList.remove('custom-select__button_is-open');
+      });
+
+      customSelectList.appendChild(customSelectOption);
+    });
+
+    customSelectWrapper.appendChild(customSelectHiddenInput);
+
+    document.addEventListener('click', (e) => {
+      if (e.target !== customSelectButton) {
+        customSelectList.classList.remove('custom-select__list_visible');
+        customSelectButton.classList.remove('custom-select__button_is-open');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        customSelectList.classList.remove('custom-select__list_visible');
+        customSelectButton.classList.remove('custom-select__button_is-open');
+      }
+    });
+
+    return customSelectWrapper;
   }
 
   // Функция получения типа и значения контакта из селекта и инпута для отправки на сервер ======================================================
@@ -209,9 +292,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactDivs = document.querySelectorAll('.contact-container');
     let contacts = [];
     contactDivs.forEach(cd => {
-      const cs = cd.querySelector("select")
-      const input = cd.querySelector("input")
-      contacts.push ({ type: cs.options[cs.selectedIndex].value, value: input.value})
+      const cs = cd.querySelector('.custom-select__input')
+      const input = cd.querySelector('.contact-input')
+      contacts.push ({ type: cs.value, value: input.value})
       /*
       const cType = cs.options[cs.selectedIndex].value
       if cType == 'Tele' {}
@@ -394,11 +477,12 @@ document.addEventListener('DOMContentLoaded', () => {
       targetUser = activeID;
 
       deleteClientModalContainer.classList.add('visible');
+      deleteClientModal.classList.add('visible');
     });
 
-    removeVisible(closeDeleteClientModalButton, deleteClientModalContainer);
-    removeVisible(cancelDeleteButton, deleteClientModalContainer);
-    removeVisible(deleteClientModalContainer, deleteClientModalContainer);
+    removeVisible(closeDeleteClientModalButton, deleteClientModal, deleteClientModalContainer);
+    removeVisible(cancelDeleteButton, deleteClientModal, deleteClientModalContainer);
+    removeVisible(deleteClientModalContainer, deleteClientModal, deleteClientModalContainer);
 
     deleteClientModal.addEventListener('click', (event) => {
       event.stopPropagation();
@@ -415,23 +499,33 @@ document.addEventListener('DOMContentLoaded', () => {
       targetUser = activeID;
 
       updateClientModalContainer.classList.add('visible');
+      updateClientModal.classList.add('visible');
 
       fetchClientInfoByID(targetUser);
 
       clientIdInUpdateModal.innerHTML = `ID: ${targetUser}`;
+
+      setTimeout(() => {
+        const deleteContactBtns = document.querySelectorAll('.delete-contact-btn');
+        console.log(deleteContactBtns);
+        deleteContactBtnsListener(deleteContactBtns, addContactButtonUpdate);
+      }, 100);
     });
 
-    removeVisible(closeUpdateClientModalButton, updateClientModalContainer, addContactButtonUpdate);
-    removeVisible(updateClientModalContainer, updateClientModalContainer, addContactButtonUpdate);
+    removeVisible(closeUpdateClientModalButton, updateClientModal, updateClientModalContainer, addContactButtonUpdate);
+    removeVisible(updateClientModalContainer, updateClientModal, updateClientModalContainer, addContactButtonUpdate);
 
     buttonForDeleteClientInUpdateModal.addEventListener('click', () => {
       updateClientModalContainer.classList.remove('visible');
+      updateClientModal.classList.remove('visible');
       deleteClientModalContainer.classList.add('visible');
+      deleteClientModal.classList.add('visible');
+
     });
 
-    updateClientModal.addEventListener('click', (event) => {
-      event.stopPropagation();
-    });
+    // updateClientModal.addEventListener('click', (event) => {
+    //   event.stopPropagation();
+    // });
   }
 
   function formatDate(date) {
