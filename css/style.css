@@ -288,8 +288,8 @@ a {
   fill: #fff;
 }
 
-/* add client modal */
-.add-new-client {
+/* General styles for modals */
+.modal__background {
   position: fixed;
   overflow: auto;
   left: 0;
@@ -302,7 +302,9 @@ a {
   transition: opacity .4s ease-in, visibility .4s ease-in;
 }
 
-.add-new-client__modal {
+.add-client-modal,
+.update-client-modal,
+.delete-client-modal {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -313,50 +315,54 @@ a {
   transition: opacity .4s ease-in, visibility .4s ease-in;
 }
 
-.add-new-client__modal-container {
+.add-client-modal__wrapper,
+.update-client-modal__wrapper,
+.delete-client-modal__wrapper {
   position: relative;
   padding: 24px 0 25px 0;
   background-color: #fff;
 }
 
-.add-new-client__close-btn {
+.add-client-modal__close-button,
+.delete-client-modal__close-button,
+.update-client-modal__close-button {
   position: absolute;
   top: 15px;
   right: 15px;
 }
 
-.add-new-client__heading {
+.add-client-modal__heading,
+.delete-client-modal__heading,
+.update-client-modal__heading-text {
   margin: 0;
   margin-bottom: 32px;
   padding-left: 30px;
+  line-height: 24px;
   font-size: 18px;
   color: #333;
 }
 
-.add-new-client__form {
+.add-client-modal__form,
+.update-client-modal__form {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.input-container {
+.form-inputs__wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.label {
+.form-input__label {
   font-size: 14px;
   color: #b0b0b0;
   transform: translate(0, -45px);
   transition: all 0.3s ease-out;
 }
 
-.asterisk {
-  color: #9873ff;
-}
-
-.input {
+.form-input {
   margin-bottom: 25px;
   width: 390px;
   border: none;
@@ -366,18 +372,22 @@ a {
   color: #333;
 }
 
-.input:focus {
+.asterisk {
+  color: #9873ff;
+}
+
+.form-input:focus {
   outline: none;
 }
 
-.input:focus + .label,
-.input:not(:placeholder-shown) + .label  {
+.form-input:focus + .form-input__label,
+.form-input:not(:placeholder-shown) + .form-input__label  {
   font-size: 10px;
   color: #b0b0b0;
   transform: translate(0, -57px);
 }
 
-.add-contact-btn__container {
+.add-contact-button__wrapper {
   margin-bottom: 25px;
   padding-top: 8px;
   padding-bottom: 8px;
@@ -406,7 +416,7 @@ a {
   vertical-align: middle;
 }
 
-.add-new-client__save-btn {
+.save-client__button {
   margin-bottom: 5px;
   padding: 13px 35px;
   font-weight: 600;
@@ -416,15 +426,17 @@ a {
   transition: background-color .3s ease-in;
 }
 
-.add-new-client__save-btn:hover {
+.save-client__button:hover {
   background-color: #b89eff;
 }
 
-.add-new-client__save-btn:active {
+.save-client__button:active {
   background-color: #8052ff;
 }
 
-.add-new-client__cancel-btn {
+.add-client-modal__cancel-button,
+.update-client-modal__delete-button,
+.delete-client-modal__cancel-button {
   font-size: 12px;
   color: #333;
   text-decoration: underline;
@@ -441,15 +453,6 @@ a {
 .contact-container:not(:first-child) {
   margin-top: 15px;
 }
-
-/* .selectCustom {
-  padding: 8px 0 8px 12px;
-  max-width: 123px;
-  border: 1px solid #c8c5d1;
-  border-radius: 0;
-  font-size: 12px;
-  background-color: #e7e5eb;
-} */
 
 .contact-input {
   padding: 9px 0 10px 12px;
@@ -494,41 +497,23 @@ a {
   transition: opacity .4s ease-in, visibility .4s ease-in;
 }
 
-.delete-client__modal {
-  position: absolute;
-  left: 50%;
+.delete-client-modal {
   top: 40%;
-  transform: translate(-50%, -50%);
-  width: 450px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .4s ease-in, visibility .4s ease-in;
 }
 
-.delete-client__modal-container {
-  position: relative;
+.delete-client-modal__wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 22px 0 27px 0;
-  background-color: #fff;
 }
 
-.delete-client__close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-}
-
-.delete-client__heading {
-  margin: 0;
+.delete-client-modal__heading {
   margin-bottom: 11px;
-  font-size: 18px;
-  line-height: 24px;
-  color: #333;
+  padding-left: 0;
 }
 
-.delete-client__description {
+.delete-client-modal__description {
   margin: 0;
   margin-bottom: 25px;
   max-width: 275px;
@@ -538,7 +523,7 @@ a {
   color: #333;
 }
 
-.delete-client__btn {
+.delete-client-modal__delete-button {
   margin-bottom: 5px;
   padding: 14px 35px;
   font-weight: 600;
@@ -548,18 +533,12 @@ a {
   transition: background-color .3s ease-in;
 }
 
-.delete-client__btn:hover {
+.delete-client-modal__delete-button:hover {
   background-color: #b89eff;
 }
 
-.delete-client__btn:active {
+.delete-client-modal__delete-button:active {
   background-color: #8052ff;
-}
-
-.delete-client__cancel-btn {
-  font-size: 12px;
-  color: #333;
-  text-decoration: underline;
 }
 
 /* update client modal */
@@ -576,67 +555,20 @@ a {
   transition: opacity .4s ease-in, visibility .4s ease-in;
 }
 
-.update-client__modal {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 450px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .4s ease-in, visibility .4s ease-in;
-}
-
-.update-client__modal-container {
-  position: relative;
+.update-client-modal__wrapper {
   display: flex;
   flex-direction: column;
-  padding: 24px 0 25px 0;
-  background-color: #fff;
 }
 
-.update-client__close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-}
-
-.update-client__form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.update-client-modal__form {
   width: 100%;
 }
 
-.update__input-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.add-contact-btn__container_update {
-  margin-bottom: 25px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  /* max-height: 260px;
-  overflow-y: auto; */
-  width: 100%;
-  text-align: center;
-  background-color: #f4f3f6;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.update-client__heading-text {
+.update-client-modal__heading-text {
   display: inline-block;
-  margin: 0;
   margin-bottom: 30px;
   margin-right: 5px;
   padding-left: 30px;
-  font-size: 18px;
-  line-height: 24px;
-  color: #333;
 }
 
 .client__id {
@@ -728,6 +660,7 @@ a {
   visibility: hidden;
 }
 
+/* visibility */
 .visible {
   opacity: 1;
   visibility: visible;
