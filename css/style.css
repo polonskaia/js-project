@@ -166,7 +166,20 @@ a {
 .contact-icon {
   cursor: pointer;
   opacity: 0.7;
-  transition: opacity .2s ease-in;
+  transition: opacity .3s ease-in;
+}
+
+.contact-link {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #b89eff;
+  text-decoration: underline;
+}
+
+.contact-link_tel {
+  text-decoration: none;
+  color: #fff;
 }
 
 .contact-tooltip {
@@ -176,12 +189,13 @@ a {
   transform: translateX(-50%);
   padding: 9px 14px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   white-space: nowrap;
   color: #fff;
   background-color: #333;
+  opacity: 0;
   visibility: hidden;
-  transition: visibility .2s ease-in-out;
+  transition: opacity .3s ease-in-out, visibility .3s ease-in-out;
 }
 
 .contact-tooltip::after {
@@ -201,6 +215,7 @@ a {
 }
 
 .contact-div:hover .contact-tooltip {
+  opacity: 1;
   visibility: visible;
 }
 
@@ -232,6 +247,10 @@ a {
 
 .action-btn_icon {
   opacity: 0.7;
+}
+
+.action-btn_edit {
+  margin-right: 32px;
 }
 
 .action-btn_edit,
@@ -391,8 +410,6 @@ a {
   margin-bottom: 25px;
   padding-top: 8px;
   padding-bottom: 8px;
-  /* max-height: 260px;
-  overflow-y: auto; */
   width: 100%;
   text-align: center;
   background-color: #f4f3f6;
@@ -402,9 +419,19 @@ a {
 }
 
 .add-contact__btn {
+  padding-left: 18px;
   font-weight: 600;
   font-size: 14px;
   color: #333;
+  background-image: url('../img/add-contact-icon.svg');
+  background-repeat: no-repeat;
+  background-position: center left;
+  transition: color .3s ease-in, background-image .3s ease-in;
+}
+
+.add-contact__btn:hover {
+  color: #9873ff;
+  background-image: url('../img/add-contact-icon-hover.svg');
 }
 
 .add-contact__btn_margin {
@@ -414,6 +441,17 @@ a {
 
 .add-contact__icon {
   vertical-align: middle;
+}
+
+.server-errors {
+  margin-bottom: 9px;
+  max-width: 255px;
+  text-align: center;
+}
+
+.server-errors__error-descr {
+  font-size: 10px;
+  color: #f06a4d;
 }
 
 .save-client__button {
@@ -448,10 +486,45 @@ a {
   justify-content: center;
   position: relative;
   max-width: 390px;
+  opacity: 0;
+  transition: opacity .3s ease-in-out;
 }
 
 .contact-container:not(:first-child) {
   margin-top: 15px;
+}
+
+.delete-contact-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+  background-color: #333;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease-in-out;
+}
+
+.delete-contact-tooltip::after {
+  position: absolute;
+  content: '';
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 20px solid #333;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+.delete-contact-btn:hover .delete-contact-tooltip {
+  opacity: 1;
+  visibility: visible;
 }
 
 .contact-input {
@@ -481,6 +554,12 @@ a {
   background-image: url('../img/delete-contact.svg');
   background-repeat: no-repeat;
   background-position: center center;
+  transition: border .3s ease-in, background-image .3s ease-in;
+}
+
+.delete-contact-btn:hover {
+  border: 1px solid #f06a4d;
+  background-image: url('../img/delete-contact-hover.svg');
 }
 
 /* delete client modal */
@@ -651,7 +730,7 @@ a {
 }
 
 .custom-select__item:hover {
-  background-color: #e7e5eb;
+  background-color: #eeecf0;
 }
 
 .custom-select__input {

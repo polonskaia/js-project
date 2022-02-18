@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalBackground = document.getElementById('modal__background');
   // Модальное окно "Добавить клиента"
   const addNewClientModal = document.getElementById('add-client-modal');
+  const addClientForm = document.querySelector('.add-client-modal__form');
   const closeButtonInAddClientModal = document.getElementById('add-client-modal__close-button');
   const addContactContainer = document.getElementById('add-contact-button__wrapper_add-client');
   const addContactButton = document.getElementById('add-contact__btn');
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let sortedList;
   let targetUser;
 
-  const contactsList = ['Телефон', 'Доп. телефон', 'Email', 'Vk', 'Facebook', 'Другое'];
+  const contactsList = ['Телефон', 'Доп. телефон', 'Email', 'Vk', 'Facebook', 'Twitter'];
 
   // Кнопка "Добавить клиента"
   addClientButton.addEventListener('click', () => {
@@ -51,29 +52,50 @@ document.addEventListener('DOMContentLoaded', () => {
   closeButtonInAddClientModal.addEventListener('click', () => {
     addNewClientModal.classList.remove('visible');
     modalBackground.classList.remove('visible');
-    removeClassesFromAddContactButton(closeButtonInAddClientModal, addContactButton);
-    removeContactContainers(closeButtonInAddClientModal);
+    addContactButton.classList.remove('add-contact__btn_margin');
+    addContactButton.classList.remove('hidden');
+
+    const contactContainers = document.querySelectorAll('.contact-container');
+      if (contactContainers.length > 0) {
+        contactContainers.forEach((contact) => {
+          contact.remove();
+        });
+      }
   });
 
   // Кнопка "Отмена" в окне добавления нового клиента
   cancelButtonInAddClientModal.addEventListener('click', () => {
     addNewClientModal.classList.remove('visible');
     modalBackground.classList.remove('visible');
-    removeClassesFromAddContactButton(cancelButtonInAddClientModal, addContactButton);
-    removeContactContainers(cancelButtonInAddClientModal);
+    addContactButton.classList.remove('add-contact__btn_margin');
+    addContactButton.classList.remove('hidden');
+
+    const contactContainers = document.querySelectorAll('.contact-container');
+      if (contactContainers.length > 0) {
+        contactContainers.forEach((contact) => {
+          contact.remove();
+        });
+      }
   });
 
   // Область за модальным окном НОВОГО клиента
   modalBackground.addEventListener('click', () => {
     addNewClientModal.classList.remove('visible');
     modalBackground.classList.remove('visible');
-    removeClassesFromAddContactButton(modalBackground, addContactButton);
-    removeContactContainers(modalBackground);
+    addContactButton.classList.remove('add-contact__btn_margin');
+    addContactButton.classList.remove('hidden');
+
+    const contactContainers = document.querySelectorAll('.contact-container');
+      if (contactContainers.length > 0) {
+        contactContainers.forEach((contact) => {
+          contact.remove();
+        });
+      }
   });
 
   // Кнопка "Добавить контакт" в окне НОВОГО клиента
   addContactButton.addEventListener('click', () => {
-    createContactSelect(addContactContainer, contactsList, addContactButton);
+    createContactInModal(addContactContainer, contactsList, addContactButton);
 
     addContactButton.classList.add('add-contact__btn_margin');
 
@@ -87,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Кнопка "Сохранить" в окне НОВОГО клиента
   saveNewClientBtn.addEventListener('click', (event) => {
     event.preventDefault();
-
     const client = {
       name: addClientNameInput.value,
       surname: addClientSurnameInput.value,
@@ -95,23 +116,30 @@ document.addEventListener('DOMContentLoaded', () => {
       contacts: getContacts()
     }
 
-    removeVisible(saveNewClientBtn, addNewClientModal);
-    removeClassesFromAddContactButton(saveNewClientBtn, addContactButton);
-    removeContactContainers(saveNewClientBtn);
     addClientToServer(client);
+
+    // const serverErrorsWrapper = document.createElement('div');
+    // serverErrorsWrapper.classList.add('server-errors');
+    // addClientForm.insertBefore(serverErrorsWrapper, saveNewClientBtn);
+
+    // addClientToServer(client).then(result => {
+    //   result.errors.forEach(err => {
+    //     const serverError = document.createElement('div');
+    //     serverError.classList.add('server-errors__error-descr');
+    //     serverError.innerHTML = `Ошибка: ${(err.message).toLowerCase()}`;
+    //     serverErrorsWrapper.appendChild(serverError);
+    //     console.log(err.message)
+    //   });
+    // });
   });
 
   // Кнопка "Удалить" в окне удаления клиента
   deleteClientBtn.addEventListener('click', () => {
-    modalBackground.classList.remove('visible');
-
     deleteClientFromServer(targetUser);
   });
 
   // Кнопка "Сохранить" в окне ИЗМЕНЕНИЯ клиента
-  saveUpdatingClientButton.addEventListener('click', (event) => {
-    event.preventDefault();
-
+  saveUpdatingClientButton.addEventListener('click', () => {
     const client = {
       name: updateClientNameInput.value,
       surname: updateClientSurnameInput.value,
@@ -119,15 +147,12 @@ document.addEventListener('DOMContentLoaded', () => {
       contacts: getContacts()
     }
 
-    removeVisible(saveUpdatingClientButton, updateClientModal);
-    removeClassesFromAddContactButton(saveUpdatingClientButton, addContactButtonUpdate);
-    removeContactContainers(saveUpdatingClientButton);
     updateClientOnServer(targetUser, client);
   });
 
   // Кнопка "Добавить контакт" в окне ИЗМЕНЕНИЯ клиента
   addContactButtonUpdate.addEventListener('click', () => {
-    createContactSelect(addContactContainerUpdate, contactsList, addContactButtonUpdate);
+    createContactInModal(addContactContainerUpdate, contactsList, addContactButtonUpdate);
 
     addContactButtonUpdate.classList.add('add-contact__btn_margin');
 
@@ -214,10 +239,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Функция создания контакта в модальном окне ===============================================================================================
-  function createContactSelect(container, contactsList, contactBtn, defaultType="Телефон") {
+  function createContactInModal(container, contactsList, contactBtn, defaultType="Телефон") {
     const selectAndInputContainer = document.createElement('div');
     selectAndInputContainer.classList.add('contact-container');
     container.insertBefore(selectAndInputContainer, contactBtn);
+    setTimeout(() => selectAndInputContainer.style.opacity = '1');
+
 
     const activeIndex = contactsList.indexOf(defaultType);
 
@@ -226,21 +253,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectButton = select.querySelector('.custom-select__button');
     const selectList = select.querySelector('.custom-select__list');
     const selectInput = select.querySelector('.custom-select__input');
+    const selectOptions = selectList.querySelectorAll('.custom-select__item');
 
     if (activeIndex > 0) {
       selectButton.innerText = selectList.childNodes[activeIndex].innerHTML;
       selectInput.value = selectList.childNodes[activeIndex].dataset.value;
     }
 
+    selectOptions.forEach((option) => {
+      if (selectButton.innerHTML === option.innerHTML) {
+        option.classList.add('hidden');
+      }
+    });
+
     const contactInput = document.createElement('input');
     contactInput.classList.add('contact-input');
+    contactInput.placeholder = 'Введите данные контакта';
     selectAndInputContainer.appendChild(contactInput);
 
-    contactInput.placeholder = 'Введите данные контакта';
     const deleteContactBtn = document.createElement('button');
     deleteContactBtn.classList.add('delete-contact-btn', 'btn');
     deleteContactBtn.type = 'button';
     selectAndInputContainer.appendChild(deleteContactBtn);
+
+    const deleteContactTooltip = document.createElement('div');
+    deleteContactTooltip.classList.add('delete-contact-tooltip');
+    deleteContactTooltip.innerText = 'Удалить контакт';
+    deleteContactBtn.appendChild(deleteContactTooltip);
   }
 
   function createCustomDropdownSelect(contactsList, selectAndInputContainer, defaultType="Телефон") {
@@ -282,6 +321,14 @@ document.addEventListener('DOMContentLoaded', () => {
         customSelectHiddenInput.value = e.target.dataset.value;
         customSelectList.classList.remove('custom-select__list_visible');
         customSelectButton.classList.remove('custom-select__button_is-open');
+
+        const customSelectOptions = document.querySelectorAll('.custom-select__item');
+
+        customSelectOptions.forEach((option) => {
+          option.classList.remove('hidden');
+        });
+
+        e.target.classList.add('hidden');
       });
 
       customSelectList.appendChild(customSelectOption);
@@ -403,9 +450,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const contactTooltip = document.createElement('div');
         contactTooltip.classList.add('contact-tooltip');
-        contactTooltip.innerHTML = contactValue;
+        contactTooltip.innerHTML = `${contactType}: `;
+
+        const contactLink = document.createElement('a');
+        contactLink.classList.add('contact-link');
+        contactLink.innerHTML = contactValue;
+        contactLink.href = '#';
+        contactTooltip.appendChild(contactLink);
 
         if (contactType === 'Телефон' || contactType === 'Доп. телефон') {
+          contactLink.classList.add('contact-link_tel');
+          contactLink.innerHTML = `${contactValue.slice(0, 2)} (${contactValue.slice(2, 5)}) ${contactValue.slice(5, 8)}-${contactValue.slice(8, 10)}-${contactValue.slice(10)}`;
+          contactLink.href = `tel:${contactValue}`;
           contactDiv.appendChild(contactTooltip);
           contactDiv.appendChild(telIcon);
         } else if (contactType === 'Vk') {
@@ -417,20 +473,20 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (contactType === 'Email') {
           contactDiv.appendChild(contactTooltip);
           contactDiv.appendChild(emailIcon);
-        } else if (contactType === 'Другое') {
+        } else if (contactType === 'Twitter') {
           contactDiv.appendChild(contactTooltip);
           contactDiv.appendChild(socialIcon);
         }
       });
 
-      // Действия: изменить
-      const tableDataEdit = document.createElement('td');
-      tableDataEdit.classList.add('table__td');
-      row.appendChild(tableDataEdit);
+      // Действия
+      const tableDataActions = document.createElement('td');
+      tableDataActions.classList.add('table__td', 'table__td_actions');
+      row.appendChild(tableDataActions);
 
       const editContactBtn = document.createElement('button');
       editContactBtn.classList.add('btn', 'action-btn_edit');
-      tableDataEdit.appendChild(editContactBtn);
+      tableDataActions.appendChild(editContactBtn);
 
       const editBtnIcon = document.createElement('img');
       editBtnIcon.src = './img/edit-icon.svg';
@@ -440,14 +496,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       addListenersToUpdateButton(editContactBtn);
 
-      // Действия: удалить
-      const tableDataDelete = document.createElement('td');
-      tableDataDelete.classList.add('table__td');
-      row.appendChild(tableDataDelete);
-
       const deleteContactBtn = document.createElement('button');
       deleteContactBtn.classList.add('btn', 'action-btn_delete');
-      tableDataDelete.appendChild(deleteContactBtn);
+      tableDataActions.appendChild(deleteContactBtn);
 
       const deleteBtnIcon = document.createElement('img');
       deleteBtnIcon.src = './img/cancel-icon.svg';
@@ -504,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeVisible(modalBackground, deleteClientModal);
   }
 
-  // Обработчики, связаннеые с изменением клиента ==================================================================================================
+  // Обработчики, связанные с изменением клиента ==================================================================================================
   function addListenersToUpdateButton(editButton) {
     editButton.addEventListener('click', (event) => {
       const activeUpdateButton = event.target;
@@ -529,6 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeVisible(closeUpdateClientModalButton, updateClientModal);
     removeClassesFromAddContactButton(closeUpdateClientModalButton, addContactButtonUpdate);
     removeContactContainers(closeUpdateClientModalButton);
+
     removeVisible(modalBackground, updateClientModal);
     removeClassesFromAddContactButton(modalBackground, addContactButtonUpdate);
     removeContactContainers(modalBackground);
@@ -626,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contacts = clientData.contacts;
 
     for (let i = 0; i < contacts.length; i++) {
-      createContactSelect(addContactContainerUpdate, contactsList, addContactButtonUpdate, contacts[i].type);
+      createContactInModal(addContactContainerUpdate, contactsList, addContactButtonUpdate, contacts[i].type);
 
       addContactButtonUpdate.classList.add('add-contact__btn_margin');
     }
@@ -649,6 +701,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const data = await response.json();
     console.log(data);
+
+    if (response.status !== 200 || response.status !== 201) {
+      return data;
+    }
   }
 
   // Функция изменения клиента на сервере (PATCH)
