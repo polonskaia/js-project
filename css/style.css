@@ -443,7 +443,7 @@ a {
   vertical-align: middle;
 }
 
-.server-errors {
+.server-errors__wrapper {
   margin-bottom: 9px;
   max-width: 255px;
   text-align: center;
@@ -452,6 +452,11 @@ a {
 .server-errors__error-descr {
   font-size: 10px;
   color: #f06a4d;
+}
+
+.server-errors__error-descr {
+  opacity: 0;
+  transition: opacity .3s ease-in-out;
 }
 
 .save-client__button {
