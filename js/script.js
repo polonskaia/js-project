@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const addClientSurnameInput = document.getElementById('surname');
   const addClientNameInput = document.getElementById('name');
   const addClientLastNameInput = document.getElementById('lastName');
+  const formInputsAddClient = document.querySelectorAll('.form-input_add');
   // Модальное окно "Изменить клиента"
   const updateClientModal = document.getElementById('update-client-modal');
   const updateClientForm = document.querySelector('.update-client-modal__form');
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const updateClientSurnameInput = document.getElementById('update_surname');
   const updateClientNameInput = document.getElementById('update_name');
   const updateClientLastNameInput = document.getElementById('update_lastName');
+  const formInputsUpdateClient = document.querySelectorAll('.form-input_update');
   // Модальное окно "Удалить клиента"
   const deleteClientModal = document.getElementById('delete-client-modal');
   const closeDeleteClientModalButton = document.getElementById('delete-client-modal__close-button');
@@ -55,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
     removeServerErrors(addContactContainer);
     removeClassesFromAddContactButton(addContactButton);
     removeContactContainers();
+    formInputsAddClient.forEach((input) => {
+      input.value = '';
+    });
   });
 
   // Кнопка "Отмена" в окне добавления нового клиента
@@ -63,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
     removeServerErrors(addContactContainer);
     removeClassesFromAddContactButton(addContactButton);
     removeContactContainers();
+    formInputsAddClient.forEach((input) => {
+      input.value = '';
+    });
   });
 
   // Область за модальным окном
@@ -71,6 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
       removeVisible(addNewClientModal);
       removeServerErrors(addContactContainer);
       removeClassesFromAddContactButton(addContactButton);
+      formInputsAddClient.forEach((input) => {
+        input.value = '';
+      });
     } else if (updateClientModal.classList.contains('visible')) {
       removeVisible(updateClientModal);
       removeServerErrors(addContactContainerUpdate);
@@ -80,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     removeContactContainers();
-  })
+  });
 
   // Кнопка "Добавить контакт" в окне НОВОГО клиента
   addContactButton.addEventListener('click', () => {
@@ -107,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addClientToServer(client);
+    removeServerErrors(addContactContainer);
   });
 
   closeDeleteClientModalButton.addEventListener('click', () => {
@@ -242,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
       errorsWrapper.remove();
     }
 
-    addButtonWrapper.style.marginBottom = '25px';
+    addButtonWrapper.classList.remove('contact-wrapper__margin-bottom');
   }
 
   function removeClassesFromAddContactButton(addContactBtn) {
@@ -372,13 +384,49 @@ document.addEventListener('DOMContentLoaded', () => {
       const cs = cd.querySelector('.custom-select__input')
       const input = cd.querySelector('.contact-input')
       contacts.push ({ type: cs.value, value: input.value})
-      /*
-      const cType = cs.options[cs.selectedIndex].value
-      if cType == 'Tele' {}
-      validatePhone(input.value)
-      */
-    })
+
+      validateContacts(cs, input);
+    });
+
     return contacts;
+  }
+
+  function validateContacts(contactSelect, contactInput) {
+    const contactType = contactSelect.value;
+    console.log(contactType);
+    const contactValue = String(contactInput.value).trim();
+
+    if (contactValue.length === 0) {
+      console.log('Добавленный контакт должен быть заполнен');
+      contactInput.closest('div').classList.add('contact-input_error');
+      return;
+    }
+
+    if (contactType === 'Телефон' || contactType === 'Доп. телефон') {
+      console.log(contactValue);
+      if (/\+[0-9]+/.test(contactValue) === false) {
+        console.log('Поле должно содержать символ "+" и 11 цифр');
+        contactInput.closest('div').classList.add('contact-input_error');
+      }
+      if (contactValue.length < 12) {
+        console.log('Некорректная длина номера телефона');
+        contactInput.closest('div').classList.add('contact-input_error');
+      }
+    }
+
+    if (contactType === 'Email') {
+      if (/^(?!.*@.*@.*$)(?!.*@.*--.*\..*$)(?!.*@.*-\..*$)(?!.*@.*-$)((.*)?@.+(\..{1,11})?)$/.test(contactValue) === false) {
+        console.log('Некорректный e-mail')
+        contactInput.closest('div').classList.add('contact-input_error');
+      }
+    }
+
+    if (contactType === 'Vk' || contactType === 'Facebook' || contactType === 'Twitter') {
+      if (/[А-Яа-яЁё]+/.test(contactValue)) {
+        console.log('Поле не должно содержать кириллические символы')
+        contactInput.closest('div').classList.add('contact-input_error');
+      }
+    }
   }
 
   // Функция создания таблицы =======================================================================================================================
@@ -723,11 +771,11 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(data);
 
     if (response.status !== 200 || response.status !== 201) {
-      showServerErrors(data, addClientForm, saveNewClientBtn, addContactContainer);
+      showServerErrors(data, addClientForm, saveNewClientBtn, addContactContainer, formInputsAddClient);
     }
   }
 
-  function showServerErrors(data, form, button, addButtonWrapper) {
+  function showServerErrors(data, form, button, addButtonWrapper, formInputs) {
     if (data.errors.length > 0) {
       const serverErrorWrapper = document.createElement('div');
       serverErrorWrapper.classList.add('server-errors__wrapper');
@@ -741,7 +789,21 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {serverError.style.opacity = '1'}, 100);
       });
 
-      addButtonWrapper.style.marginBottom = '9px';
+      addButtonWrapper.classList.add('contact-wrapper__margin-bottom');
+
+      formInputs.forEach((input) => {
+        input.addEventListener('input', () => {
+          removeServerErrors(addButtonWrapper);
+        });
+      });
+
+      const contactInputs = document.querySelectorAll('.contact-input');
+      contactInputs.forEach((input) => {
+        input.addEventListener('input', () => {
+          removeServerErrors(addButtonWrapper);
+          input.closest('div').classList.remove('contact-input_error');
+        });
+      });
     }
   }
 
@@ -756,7 +818,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(data);
 
     if (response.status !== 200 || response.status !== 201) {
-      showServerErrors(data, updateClientForm, saveUpdatingClientButton, addContactContainerUpdate);
+      showServerErrors(data, updateClientForm, saveUpdatingClientButton, addContactContainerUpdate, formInputsUpdateClient);
     }
   }
 

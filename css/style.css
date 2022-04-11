@@ -418,6 +418,10 @@ a {
   align-items: center;
 }
 
+.contact-wrapper__margin-bottom {
+  margin-bottom: 9px;
+}
+
 .add-contact__btn {
   padding-left: 18px;
   font-weight: 600;
@@ -547,6 +551,14 @@ a {
   font-size: 14px;
   font-weight: 400;
   color: #b0b0b0;
+}
+
+.contact-input:focus {
+  outline: none;
+}
+
+.contact-input_error {
+  border: 1px solid #f06a4d;
 }
 
 .delete-contact-btn {
