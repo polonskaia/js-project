@@ -391,6 +391,10 @@ a {
   color: #333;
 }
 
+.form-input_error {
+  border-bottom: 1px solid #f06a4d;
+}
+
 .asterisk {
   color: #9873ff;
 }

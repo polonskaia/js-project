@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const addClientNameInput = document.getElementById('name');
   const addClientLastNameInput = document.getElementById('lastName');
   const formInputsAddClient = document.querySelectorAll('.form-input_add');
+  const requiredInputsAdd = document.querySelectorAll('.form-input_add_required');
   // Модальное окно "Изменить клиента"
   const updateClientModal = document.getElementById('update-client-modal');
   const updateClientForm = document.querySelector('.update-client-modal__form');
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const updateClientNameInput = document.getElementById('update_name');
   const updateClientLastNameInput = document.getElementById('update_lastName');
   const formInputsUpdateClient = document.querySelectorAll('.form-input_update');
+  const requiredInputsUpdate = document.querySelectorAll('.form-input_update_required');
   // Модальное окно "Удалить клиента"
   const deleteClientModal = document.getElementById('delete-client-modal');
   const closeDeleteClientModalButton = document.getElementById('delete-client-modal__close-button');
@@ -59,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeContactContainers();
     formInputsAddClient.forEach((input) => {
       input.value = '';
+      input.classList.remove('form-input_error');
     });
   });
 
@@ -70,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeContactContainers();
     formInputsAddClient.forEach((input) => {
       input.value = '';
+      input.classList.remove('form-input_error');
     });
   });
 
@@ -81,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       removeClassesFromAddContactButton(addContactButton);
       formInputsAddClient.forEach((input) => {
         input.value = '';
+        input.classList.remove('form-input_error');
       });
     } else if (updateClientModal.classList.contains('visible')) {
       removeVisible(updateClientModal);
@@ -117,8 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
       contacts: getContacts()
     }
 
-    addClientToServer(client);
     removeServerErrors(addContactContainer);
+
+    if (validateForm(requiredInputsAdd, formInputsAddClient)) {
+      addClientToServer(client);
+    }
   });
 
   closeDeleteClientModalButton.addEventListener('click', () => {
@@ -177,7 +185,10 @@ document.addEventListener('DOMContentLoaded', () => {
       contacts: getContacts()
     }
 
-    updateClientOnServer(targetUser, client);
+    if (validateForm(requiredInputsUpdate, formInputsUpdateClient)) {
+      updateClientOnServer(targetUser, client);
+    }
+
     locationHashChanged();
   });
 
@@ -380,54 +391,107 @@ document.addEventListener('DOMContentLoaded', () => {
   function getContacts() {
     const contactDivs = document.querySelectorAll('.contact-container');
     let contacts = [];
-    contactDivs.forEach(cd => {
-      const cs = cd.querySelector('.custom-select__input')
-      const input = cd.querySelector('.contact-input')
-      contacts.push ({ type: cs.value, value: input.value})
-
-      validateContacts(cs, input);
+    contactDivs.forEach(cdiv => {
+      const contactSelect = cdiv.querySelector('.custom-select__input');
+      const contactInput = cdiv.querySelector('.contact-input');
+      contacts.push ({ type: contactSelect.value, value: contactInput.value})
     });
 
     return contacts;
   }
 
-  function validateContacts(contactSelect, contactInput) {
-    const contactType = contactSelect.value;
-    console.log(contactType);
-    const contactValue = String(contactInput.value).trim();
+  // Функция валидации формы =====================================================================================================================
+  function validateForm(requiredInputs, formInputs) {
+    let isValid = true;
 
-    if (contactValue.length === 0) {
-      console.log('Добавленный контакт должен быть заполнен');
-      contactInput.closest('div').classList.add('contact-input_error');
-      return;
-    }
+    // Валидация ФИО
+    requiredInputs.forEach((reqInput) => {
+      const reqInputValue = String(reqInput.value).trim();
 
-    if (contactType === 'Телефон' || contactType === 'Доп. телефон') {
-      console.log(contactValue);
-      if (/\+[0-9]+/.test(contactValue) === false) {
-        console.log('Поле должно содержать символ "+" и 11 цифр');
-        contactInput.closest('div').classList.add('contact-input_error');
-      }
-      if (contactValue.length < 12) {
-        console.log('Некорректная длина номера телефона');
-        contactInput.closest('div').classList.add('contact-input_error');
-      }
-    }
+      if (reqInputValue.length === 0) {
+        console.log('Укажите фамилию и имя');
+        reqInput.classList.add('form-input_error');
 
-    if (contactType === 'Email') {
-      if (/^(?!.*@.*@.*$)(?!.*@.*--.*\..*$)(?!.*@.*-\..*$)(?!.*@.*-$)((.*)?@.+(\..{1,11})?)$/.test(contactValue) === false) {
-        console.log('Некорректный e-mail')
-        contactInput.closest('div').classList.add('contact-input_error');
-      }
-    }
+        reqInput.addEventListener('input', () => {
+          reqInput.classList.remove('form-input_error');
+        });
 
-    if (contactType === 'Vk' || contactType === 'Facebook' || contactType === 'Twitter') {
-      if (/[А-Яа-яЁё]+/.test(contactValue)) {
-        console.log('Поле не должно содержать кириллические символы')
-        contactInput.closest('div').classList.add('contact-input_error');
+        isValid = false;
       }
-    }
+    });
+
+    formInputs.forEach((input) => {
+      if ((/[0-9]/.test(input.value) || /[^А-Яа-яЁёA-Za-z0-9-]/.test(input.value)) && input.value.length > 0) {
+        console.log(input.value)
+        console.log('Поле должно содержать только буквы');
+
+        input.classList.add('form-input_error');
+
+        input.addEventListener('input', () => {
+          input.classList.remove('form-input_error');
+        });
+
+        isValid = false;
+      }
+    });
+
+    // Валидация контактов
+    const contactDivs = document.querySelectorAll('.contact-container');
+
+    contactDivs.forEach(cd => {
+      const contactSelect = cd.querySelector('.custom-select__input');
+      const contactInput = cd.querySelector('.contact-input');
+
+      const contactType = contactSelect.value;
+      const contactValue = String(contactInput.value).trim();
+
+      if (contactValue.length === 0) {
+        console.log('Добавленный контакт должен быть заполнен');
+        contactInput.closest('div').classList.add('contact-input_error');
+
+        contactInput.addEventListener('input', () => {
+          contactInput.closest('div').classList.remove('contact-input_error');
+        });
+
+        isValid = false;
+        return;
+      }
+
+      if (contactType === 'Телефон' || contactType === 'Доп. телефон') {
+        if (/\+[0-9]+/.test(contactValue) === false || contactValue.length < 12) {
+          console.log('Поле должно содержать символ "+" и 11 цифр');
+          contactInput.closest('div').classList.add('contact-input_error');
+
+          isValid = false;
+        }
+      }
+
+      if (contactType === 'Email') {
+        if (/^(?!.*@.*@.*$)(?!.*@.*--.*\..*$)(?!.*@.*-\..*$)(?!.*@.*-$)((.*)?@.+(\..{1,11})?)$/.test(contactValue) === false) {
+          console.log('Некорректный e-mail')
+          contactInput.closest('div').classList.add('contact-input_error');
+
+          isValid = false;
+        }
+      }
+
+      if (contactType === 'Vk' || contactType === 'Facebook' || contactType === 'Twitter') {
+        if (/[А-Яа-яЁё]+/.test(contactValue)) {
+          console.log('Поле не должно содержать кириллические символы')
+          contactInput.closest('div').classList.add('contact-input_error');
+
+          isValid = false;
+        }
+      }
+
+      contactInput.addEventListener('input', () => {
+        contactInput.closest('div').classList.remove('contact-input_error');
+      });
+    });
+
+    return isValid;
   }
+
 
   // Функция создания таблицы =======================================================================================================================
   function createTable(array) {
@@ -801,7 +865,6 @@ document.addEventListener('DOMContentLoaded', () => {
       contactInputs.forEach((input) => {
         input.addEventListener('input', () => {
           removeServerErrors(addButtonWrapper);
-          input.closest('div').classList.remove('contact-input_error');
         });
       });
     }
