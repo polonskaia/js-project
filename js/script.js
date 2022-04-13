@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     removeServerErrors(addContactContainer);
 
-    if (validateForm(requiredInputsAdd, formInputsAddClient)) {
+    if (validateForm(formInputsAddClient, addClientSurnameInput, addClientNameInput, addClientForm, saveNewClientBtn)) {
       addClientToServer(client);
     }
   });
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
       contacts: getContacts()
     }
 
-    if (validateForm(requiredInputsUpdate, formInputsUpdateClient)) {
+    if (validateForm(formInputsUpdateClient, updateClientSurnameInput, updateClientNameInput, updateClientForm, saveUpdatingClientButton)) {
       updateClientOnServer(targetUser, client);
     }
 
@@ -260,9 +260,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function removeServerErrors(addButtonWrapper) {
     const errorsWrapper = document.querySelector('.server-errors__wrapper');
+    const errorFullNameInvalid = document.querySelector('.input-error_invalid-fullname');
+    const errorFill = document.querySelectorAll('.input-error_fill');
 
     if (errorsWrapper) {
       errorsWrapper.remove();
+    }
+
+    if (errorFullNameInvalid) {
+      errorFullNameInvalid.remove();
+    }
+
+    if (errorFill) {
+      errorFill.forEach((error) => {
+        error.remove();
+      });
     }
 
     addButtonWrapper.classList.remove('contact-wrapper__margin-bottom');
@@ -314,6 +326,10 @@ document.addEventListener('DOMContentLoaded', () => {
     deleteContactTooltip.classList.add('delete-contact-tooltip');
     deleteContactTooltip.innerText = 'Удалить контакт';
     deleteContactBtn.appendChild(deleteContactTooltip);
+
+    const contactErrorLabel = document.createElement('div');
+    contactErrorLabel.classList.add('contact-label_error');
+    selectAndInputContainer.appendChild(contactErrorLabel);
   }
 
   function createCustomDropdownSelect(contactsList, selectAndInputContainer, defaultType="Телефон") {
@@ -401,39 +417,102 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Функция валидации формы =====================================================================================================================
-  function validateForm(requiredInputs, formInputs) {
+  function validateForm(formInputs, surnameInput, nameInput, form, button) {
     let isValid = true;
+    let fullNameIsValid = true;
 
     // Валидация ФИО
-    requiredInputs.forEach((reqInput) => {
-      const reqInputValue = String(reqInput.value).trim();
+    const surnameInputValue = String(surnameInput.value).trim();
+    const nameInputValue = String(nameInput.value).trim();
 
-      if (reqInputValue.length === 0) {
-        console.log('Укажите фамилию и имя');
-        reqInput.classList.add('form-input_error');
+    if (surnameInputValue.length === 0) {
+      surnameInput.classList.add('form-input_error');
 
-        reqInput.addEventListener('input', () => {
-          reqInput.classList.remove('form-input_error');
-        });
+      const errorFill = document.createElement('div');
+      errorFill.classList.add('input-error_fill');
+      form.insertBefore(errorFill, button);
 
-        isValid = false;
-      }
-    });
+      errorFill.innerHTML = 'Укажите фамилию';
+
+      setTimeout(() => {
+        errorFill.classList.add('visible');
+      }, 100);
+
+      surnameInput.addEventListener('input', () => {
+        surnameInput.classList.remove('form-input_error');
+        errorFill.classList.remove('visible');
+
+        setTimeout(() => {
+          errorFill.remove();
+        }, 300);
+      });
+
+      isValid = false;
+    }
+
+    if (nameInputValue.length === 0) {
+      nameInput.classList.add('form-input_error');
+
+      const errorFill = document.createElement('div');
+      errorFill.classList.add('input-error_fill');
+      form.insertBefore(errorFill, button);
+
+      errorFill.innerHTML = 'Укажите имя';
+
+      setTimeout(() => {
+        errorFill.classList.add('visible');
+      }, 100);
+
+      nameInput.addEventListener('input', () => {
+        nameInput.classList.remove('form-input_error');
+
+        errorFill.classList.remove('visible');
+
+        setTimeout(() => {
+          errorFill.remove();
+        }, 300);
+      });
+
+      isValid = false;
+    }
 
     formInputs.forEach((input) => {
       if ((/[0-9]/.test(input.value) || /[^А-Яа-яЁёA-Za-z0-9-]/.test(input.value)) && input.value.length > 0) {
-        console.log(input.value)
-        console.log('Поле должно содержать только буквы');
+        fullNameIsValid = false;
 
         input.classList.add('form-input_error');
 
         input.addEventListener('input', () => {
           input.classList.remove('form-input_error');
+
+          const error = document.querySelector('.input-error_invalid-fullname');
+
+          if (error) {
+            error.classList.remove('visible');
+
+            setTimeout(() => {
+              error.remove();
+            }, 300);
+
+            fullNameIsValid = true;
+          }
         });
 
         isValid = false;
       }
     });
+
+    if (!fullNameIsValid) {
+      const errorFullNameInvalid = document.createElement('div');
+      errorFullNameInvalid.classList.add('input-error_invalid-fullname');
+      form.insertBefore(errorFullNameInvalid, button);
+
+      errorFullNameInvalid.innerHTML = 'ФИО должно содержать только буквы';
+
+      setTimeout(() => {
+        errorFullNameInvalid.classList.add('visible');
+      }, 100);
+    }
 
     // Валидация контактов
     const contactDivs = document.querySelectorAll('.contact-container');
@@ -441,16 +520,25 @@ document.addEventListener('DOMContentLoaded', () => {
     contactDivs.forEach(cd => {
       const contactSelect = cd.querySelector('.custom-select__input');
       const contactInput = cd.querySelector('.contact-input');
+      const selectButton = cd.querySelector('.custom-select__button');
+      const contactErrorLabel = cd.querySelector('.contact-label_error');
 
       const contactType = contactSelect.value;
       const contactValue = String(contactInput.value).trim();
 
       if (contactValue.length === 0) {
-        console.log('Добавленный контакт должен быть заполнен');
         contactInput.closest('div').classList.add('contact-input_error');
+        contactErrorLabel.innerHTML = 'Добавленный контакт должен быть заполнен';
+        contactErrorLabel.classList.add('visible');
 
         contactInput.addEventListener('input', () => {
           contactInput.closest('div').classList.remove('contact-input_error');
+          contactErrorLabel.classList.remove('visible');
+        });
+
+        selectButton.addEventListener('click', () => {
+          contactInput.closest('div').classList.remove('contact-input_error');
+          contactErrorLabel.classList.remove('visible');
         });
 
         isValid = false;
@@ -459,8 +547,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (contactType === 'Телефон' || contactType === 'Доп. телефон') {
         if (/\+[0-9]+/.test(contactValue) === false || contactValue.length < 12) {
-          console.log('Поле должно содержать символ "+" и 11 цифр');
           contactInput.closest('div').classList.add('contact-input_error');
+          contactErrorLabel.innerHTML = 'Поле должно содержать символ "+" и 11 цифр';
+          contactErrorLabel.classList.add('visible');
 
           isValid = false;
         }
@@ -468,8 +557,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (contactType === 'Email') {
         if (/^(?!.*@.*@.*$)(?!.*@.*--.*\..*$)(?!.*@.*-\..*$)(?!.*@.*-$)((.*)?@.+(\..{1,11})?)$/.test(contactValue) === false) {
-          console.log('Некорректный e-mail')
           contactInput.closest('div').classList.add('contact-input_error');
+          contactErrorLabel.innerHTML = 'Некорректный e-mail';
+          contactErrorLabel.classList.add('visible');
 
           isValid = false;
         }
@@ -477,8 +567,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (contactType === 'Vk' || contactType === 'Facebook' || contactType === 'Twitter') {
         if (/[А-Яа-яЁё]+/.test(contactValue)) {
-          console.log('Поле не должно содержать кириллические символы')
           contactInput.closest('div').classList.add('contact-input_error');
+          contactErrorLabel.innerHTML = 'Поле не должно содержать кириллические символы';
+          contactErrorLabel.classList.add('visible');
 
           isValid = false;
         }
@@ -486,12 +577,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       contactInput.addEventListener('input', () => {
         contactInput.closest('div').classList.remove('contact-input_error');
+        contactErrorLabel.classList.remove('visible');
+      });
+
+      selectButton.addEventListener('click', () => {
+        contactInput.closest('div').classList.remove('contact-input_error');
+        contactErrorLabel.classList.remove('visible');
       });
     });
 
     return isValid;
   }
-
 
   // Функция создания таблицы =======================================================================================================================
   function createTable(array) {
@@ -702,6 +798,8 @@ document.addEventListener('DOMContentLoaded', () => {
   (function () {
     if (location.hash) {
       let hash = location.hash.slice(1);
+
+      targetUser = hash;
 
       modalBackground.classList.add('visible');
       updateClientModal.classList.add('visible');
