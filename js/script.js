@@ -37,6 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const buttonIDSort = document.querySelector('.th__btn_id');
   const buttonCreateSort = document.querySelector('.th__btn_create');
   const buttonUpdateSort = document.querySelector('.th__btn_update');
+  const arrowFullNameSort = document.querySelector('.th__arrow_fullname');
+  const arrowIDSort = document.querySelector('.th__arrow_id');
+  const arrowCreateSort = document.querySelector('.th__arrow_create');
+  const arrowUpdateSort = document.querySelector('.th__arrow_update');
 
   let tableBody = document.querySelector('.table__tbody');
   let timeOutId;
@@ -239,15 +243,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   buttonIDSort.addEventListener('click', () => {
-    sortClients('id', buttonIDSort, false);
+    sortClients('id', arrowIDSort, false);
   });
 
   buttonCreateSort.addEventListener('click', () => {
-    sortClients('createdAt', buttonCreateSort, true);
+    sortClients('createdAt', arrowCreateSort, true);
   });
 
   buttonUpdateSort.addEventListener('click', () => {
-    sortClients('updatedAt', buttonUpdateSort, true);
+    sortClients('updatedAt', arrowUpdateSort, true);
   });
 
   function hiddenAddContactButton(button) {
@@ -950,25 +954,25 @@ document.addEventListener('DOMContentLoaded', () => {
       return `${a['surname']} ${a['name']} ${a['lastName']}` > `${b['surname']} ${b['name']} ${b['lastName']}` ? 1 :-1
     });
 
-    if (buttonFullNameSort.textContent === 'А-Я') {
-      buttonFullNameSort.textContent = 'Я-А';
+    if (arrowFullNameSort.textContent === 'А-Я') {
+      arrowFullNameSort.textContent = 'Я-А';
       sortedList = clientsList.reverse();
     } else {
-      buttonFullNameSort.textContent = 'А-Я';
+      arrowFullNameSort.textContent = 'А-Я';
     }
 
     createTable(sortedList);
   }
 
   // Функция сортировки клиентов по остальным полям
-  async function sortClients(field, button, boolean) {
+  async function sortClients(field, arrow, boolean) {
     let clientsList = await searchClients();
 
     sortedList = clientsList.sort(sortByField(field));
 
-    button.classList.toggle('flip');
+    arrow.classList.toggle('flip');
 
-    if (button.classList.contains('flip') === boolean) {
+    if (arrow.classList.contains('flip') === boolean) {
       sortedList = clientsList.reverse();
     }
 

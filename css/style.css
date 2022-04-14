@@ -96,20 +96,31 @@ a {
   border-collapse: collapse;
 }
 
-.table__th {
-  padding: 8px 20px;
-  text-align: start;
+.table__th,
+.th__btn {
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;
   color: #b0b0b0;
 }
 
-.table__th_id {
-  color: #9873ff;
+.table__th {
+  padding: 8px 20px;
+  text-align: start;
 }
 
 .th__btn {
+  display: flex;
+  align-items: center;
+}
+
+.th__btn_id {
+  color: #9873ff;
+}
+
+.th__arrow {
+  display: inline-block;
+  margin-left: 3px;
   width: 12px;
   height: 12px;
   color: #9873ff;
@@ -118,14 +129,17 @@ a {
   transition: transform .5s;
 }
 
-.flip {
-  transform: rotateX(180deg);
-}
-
-.th__btn_fullname {
+.th__arrow_fullname {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 40px;
   font-weight: 600;
   font-size: 10px;
+}
+
+.flip {
+  transform: rotateX(180deg);
 }
 
 .table__tbody {
