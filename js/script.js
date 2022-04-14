@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Кнопка "Сохранить" в окне НОВОГО клиента
-  saveNewClientBtn.addEventListener('click', (event) => {
+  saveNewClientBtn.addEventListener('click', async (event) => {
     event.preventDefault();
     const client = {
       name: addClientNameInput.value,
@@ -130,17 +130,18 @@ document.addEventListener('DOMContentLoaded', () => {
     removeErrors(addContactContainer);
 
     if (validateForm(formInputsAddClient, addClientSurnameInput, addClientNameInput, addClientForm, saveNewClientBtn)) {
-      addClientToServer(client);
+      const isSuccess = await addClientToServer(client);
+      if (isSuccess) {
+        removeVisible(addNewClientModal);
+        removeClassesFromAddContactButton(addContactButton);
+        removeContactContainers();
+        removeErrors(addContactContainer);
 
-      removeVisible(addNewClientModal);
-      removeErrors(addContactContainer);
-      removeClassesFromAddContactButton(addContactButton);
-      removeContactContainers();
-
-      formInputsAddClient.forEach((input) => {
-        input.value = '';
-        input.classList.remove('form-input_error');
-      });
+        formInputsAddClient.forEach((input) => {
+          input.value = '';
+          input.classList.remove('form-input_error');
+        });
+      }
     }
   });
 
@@ -198,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
    // Кнопка "Сохранить" в окне ИЗМЕНЕНИЯ клиента
-  saveUpdatingClientButton.addEventListener('click', (event) => {
+  saveUpdatingClientButton.addEventListener('click', async (event) => {
     event.preventDefault();
     removeErrors(addContactContainerUpdate);
 
@@ -210,16 +211,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (validateForm(formInputsUpdateClient, updateClientSurnameInput, updateClientNameInput, updateClientForm, saveUpdatingClientButton)) {
-      updateClientOnServer(targetUser, client);
+      const isSuccess = await updateClientOnServer(targetUser, client);
+      if (isSuccess) {
+        removeVisible(updateClientModal);
+        removeErrors(addContactContainerUpdate);
+        removeClassesFromAddContactButton(addContactButtonUpdate);
+        removeContactContainers();
 
-      removeVisible(updateClientModal);
-      removeErrors(addContactContainerUpdate);
-      removeClassesFromAddContactButton(addContactButtonUpdate);
-      removeContactContainers();
-
-      formInputsUpdateClient.forEach((input) => {
-        input.classList.remove('form-input_error');
-      });
+        formInputsUpdateClient.forEach((input) => {
+          input.classList.remove('form-input_error');
+        });
+      }
     }
 
     locationHashChanged();
@@ -822,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
       location.hash = activeID;
 
       const deleteContactBtns = document.querySelectorAll('.delete-contact-btn');
-      console.log(deleteContactBtns)
+
       deleteContactsInModal(deleteContactBtns, addContactButtonUpdate);
     }
 
@@ -882,43 +884,67 @@ document.addEventListener('DOMContentLoaded', () => {
     return (a, b) => a[field] > b[field] ? 1 : -1;
   }
 
-  function showServerErrors(data, form, button, addButtonWrapper, formInputs) {
-    if (data.errors) {
-      if (data.errors.length > 0) {
-        const serverErrorWrapper = document.createElement('div');
-        serverErrorWrapper.classList.add('server-errors__wrapper');
-        form.insertBefore(serverErrorWrapper, button);
+  function showServerErrors(data, response, form, button, addButtonWrapper, formInputs) {
+    if (data.errors && data.errors.length > 0) {
+      const serverErrorWrapper = document.createElement('div');
+      serverErrorWrapper.classList.add('server-errors__wrapper');
+      form.insertBefore(serverErrorWrapper, button);
 
-        data.errors.forEach(error => {
-          const serverError = document.createElement('div');
-          serverError.classList.add('server-errors__error-descr');
-          serverError.innerHTML = `Ошибка: ${error.message.toLowerCase()}!`;
-          serverErrorWrapper.appendChild(serverError);
-          setTimeout(() => {serverError.style.opacity = '1'}, 100);
+      data.errors.forEach(error => {
+        const serverError = document.createElement('div');
+        serverError.classList.add('server-errors__error-descr');
+        serverError.innerHTML = `Ошибка: ${error.message.toLowerCase()}!`;
+        serverErrorWrapper.appendChild(serverError);
+        setTimeout(() => {serverError.style.opacity = '1'}, 100);
+      });
+
+      addButtonWrapper.classList.add('contact-wrapper__margin-bottom');
+
+      formInputs.forEach((input) => {
+        input.addEventListener('input', () => {
+          removeErrors(addButtonWrapper);
         });
+      });
 
-        addButtonWrapper.classList.add('contact-wrapper__margin-bottom');
-
-        formInputs.forEach((input) => {
-          input.addEventListener('input', () => {
-            removeErrors(addButtonWrapper);
-          });
+      const contactInputs = document.querySelectorAll('.contact-input');
+      contactInputs.forEach((input) => {
+        input.addEventListener('input', () => {
+          removeErrors(addButtonWrapper);
         });
+      });
+    }
 
-        const contactInputs = document.querySelectorAll('.contact-input');
-        contactInputs.forEach((input) => {
-          input.addEventListener('input', () => {
-            removeErrors(addButtonWrapper);
-          });
+    if (!data.errors && (response.status !== 200 && response.status !== 201)) {
+      const serverErrorWrapper = document.createElement('div');
+      serverErrorWrapper.classList.add('server-errors__wrapper');
+      form.insertBefore(serverErrorWrapper, button);
+
+      const serverError = document.createElement('div');
+      serverError.classList.add('server-errors__error-descr');
+      serverError.innerHTML = `Что-то пошло не так (${response.status})`;
+      serverErrorWrapper.appendChild(serverError);
+      setTimeout(() => {serverError.style.opacity = '1'}, 100);
+
+      addButtonWrapper.classList.add('contact-wrapper__margin-bottom');
+
+      formInputs.forEach((input) => {
+        input.addEventListener('input', () => {
+          removeErrors(addButtonWrapper);
         });
-      }
+      });
+
+      const contactInputs = document.querySelectorAll('.contact-input');
+      contactInputs.forEach((input) => {
+        input.addEventListener('input', () => {
+          removeErrors(addButtonWrapper);
+        });
+      });
     }
   }
 
   // Функция сортировки клиентов по ФИО
   async function sortClientsByFullName() {
     let clientsList = await searchClients();
-    console.log(clientsList)
 
     sortedList = clientsList.sort((a, b) => {
       return `${a['surname']} ${a['name']} ${a['lastName']}` > `${b['surname']} ${b['name']} ${b['lastName']}` ? 1 :-1
@@ -954,7 +980,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchString = searchInput.value;
     const searchClients = await fetch(`http://localhost:3000/api/clients?search=${searchString}`);
     const searchClientsData = await searchClients.json();
-    console.log(searchClientsData);
 
     createTable(searchClientsData);
 
@@ -988,20 +1013,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Функция отправки клиента на сервер (POST)
-  async function addClientToServer(client) {
+  async function addClientToServer(client)  {
     const response = await fetch('http://localhost:3000/api/clients', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(client)
     });
-    const data = await response.json();
-    console.log(data);
 
-    if (response.status !== 200 || response.status !== 201) {
-      showServerErrors(data, addClientForm, saveNewClientBtn, addContactContainer, formInputsAddClient);
+    const data = await response.json();
+
+    showServerErrors(data, response, addClientForm, saveNewClientBtn, addContactContainer, formInputsAddClient);
+
+    if (response.status !== 200 && response.status !== 201) {
+      return false;
     }
 
     await reloadTable();
+
+    return true;
   }
 
   // Функция изменения клиента на сервере (PATCH)
@@ -1011,14 +1040,18 @@ document.addEventListener('DOMContentLoaded', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(client)
     });
-    const data = await response.json();
-    console.log(data);
 
-    if (response.status !== 200 || response.status !== 201) {
-      showServerErrors(data, updateClientForm, saveUpdatingClientButton, addContactContainerUpdate, formInputsUpdateClient);
+    const data = await response.json();
+
+    showServerErrors(data, response, updateClientForm, saveUpdatingClientButton, addContactContainerUpdate, formInputsUpdateClient);
+
+    if (response.status !== 200 && response.status !== 201) {
+      return false;
     }
 
     await reloadTable();
+
+    return true;
   }
 
   // Функция удаления клиента с сервера (DELETE)
