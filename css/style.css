@@ -78,9 +78,8 @@ a {
 }
 
 .section-clients__container {
-  justify-content: center;
-  padding-top: 40px;
-  padding-bottom: 50px;
+  justify-content: space-between;
+  padding: 40px 90px 50px;
 }
 
 .clients__heading {
@@ -91,27 +90,39 @@ a {
 }
 
 /* table */
-.clients__table {
+.big-table {
+  max-height: 620px;
+  overflow: auto;
   margin-bottom: 40px;
+}
+
+.clients__table {
+	-webkit-overflow-scrolling: touch;
   border-collapse: collapse;
+  overflow-y: hidden;
 }
 
 .table__th,
 .th__btn {
   font-weight: 400;
   font-size: 12px;
-  line-height: 16px;
   color: #b0b0b0;
 }
 
 .table__th {
-  padding: 8px 20px;
-  text-align: start;
+  display: table-cell;
+  vertical-align: bottom;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.table__th_fullname {
+  white-space: nowrap;
 }
 
 .th__btn {
-  display: flex;
-  align-items: center;
+  padding: 0;
+  text-align: left;
 }
 
 .th__btn_id {
@@ -120,9 +131,8 @@ a {
 
 .th__arrow {
   display: inline-block;
-  margin-left: 3px;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   color: #9873ff;
   background-image: url('../img/arrow_downward.png');
   background-repeat: no-repeat;
@@ -130,15 +140,17 @@ a {
 }
 
 .th__arrow_fullname {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding-left: 13px;
+  vertical-align: bottom;
+  height: 13px;
+  background-position: center left;
   width: 40px;
   font-weight: 600;
   font-size: 10px;
 }
 
 .flip {
+  background-position: bottom center;
   transform: rotateX(180deg);
 }
 
@@ -151,13 +163,24 @@ a {
 }
 
 .table__td {
-  padding: 20px;
+  padding: 20px 10px;
   font-size: 14px;
 }
 
 .table__td_id {
+  padding-left: 15px;
   font-size: 12px;
   color: #b0b0b0;
+}
+
+.table__td_actions {
+  white-space: nowrap;
+  padding-right: 15px;
+}
+
+.table__td_create,
+.table__td_update {
+  white-space: nowrap;
 }
 
 .table__td_contacts {
@@ -166,8 +189,8 @@ a {
   flex-wrap: wrap;
   margin-bottom: 10px;
   padding-bottom: 0;
-  padding-top: 10;
   max-width: 150px;
+  min-width: 128px;
 }
 
 .contact-div {
@@ -805,4 +828,67 @@ a {
   opacity: 0;
   visibility: hidden;
   position: absolute;
+}
+
+/* 1200 */
+@media (max-width: 1200px) {
+  .section-clients__container {
+    padding: 40px 20px 50px;
+  }
+
+  .table__td_fullname {
+    max-width: 260px;
+  }
+
+  .action-btn_edit {
+    margin-right: 20px;
+}
+}
+
+/* 992 */
+@media (max-width: 992px) {
+   .table__td {
+    padding: 10px;
+  }
+
+  .table__td_contacts {
+    padding-top: 20px;
+    padding-bottom: 0;
+  }
+
+  .table__td_create,
+  .table__td_update,
+  .table__td_actions {
+    white-space: normal;
+  }
+
+  .table__td_actions {
+    min-width: 118px;
+  }
+
+  .action-btn_edit {
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+
+  .header__input {
+    width: 350px;
+  }
+
+  .big-table {
+    width: 100%;
+    overflow: scroll;
+  }
+}
+
+/* 800 */
+@media (max-width: 800px) {
+  .header__container {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .section-clients__container {
+    padding: 40px 10px 50px;
+  }
 }

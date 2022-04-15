@@ -29,45 +29,41 @@
             Клиенты
           </h1>
           <!-- table -->
-          <table class="clients__table">
-            <thead class="table__thead">
-              <tr>
-                <th class="table__th table__th_id">
-                  <button class ="btn th__btn th__btn_id">
-                    ID
-                    <div class="th__arrow th__arrow_id flip"></div>
-                  </button>
-                </th>
-                <th class="table__th">
-                  <button class="btn th__btn th__btn_fullname">
-                    Фамилия Имя Отчество
-                    <div class="th__arrow th__arrow_fullname">
-                      А-Я
-                    </div>
-                  </button>
-                </th>
-                <th class="table__th">
-                  <button class="btn th__btn th__btn_create">
-                    Дата и время создания
-                    <div class="th__arrow th__arrow_create"></div>
-                  </button>
-                </th>
-                <th class="table__th">
-                  <button class="btn th__btn th__btn_update">
-                    Последние изменения
-                    <div class="th__arrow th__arrow_update"></div>
-                  </button>
-                </th>
-                <th class="table__th">
-                  Контакты
-                </th>
-                <th class="table__th" colspan="2">
-                  Действия
-                </th>
-              </tr>
-            </thead>
-            <tbody class="table__tbody"></tbody>
-          </table>
+          <div class="big-table">
+            <table class="clients__table">
+              <thead class="table__thead">
+                <tr>
+                  <th class="table__th table__th_id">
+                    <button class ="btn th__btn th__btn_id">
+                      ID <span class="th__arrow th__arrow_id flip"></span>
+                    </button>
+                  </th>
+                  <th class="table__th table__th_fullname">
+                    <button class="btn th__btn th__btn_fullname">
+                      Фамилия Имя Отчество <span class="th__arrow th__arrow_fullname">А-Я</span>
+                    </button>
+                  </th>
+                  <th class="table__th">
+                    <button class="btn th__btn th__btn_create">
+                      Дата и время создания <span class="th__arrow th__arrow_create"></span>
+                    </button>
+                  </th>
+                  <th class="table__th">
+                    <button class="btn th__btn th__btn_update">
+                      Последние изменения <span class="th__arrow th__arrow_update"></span>
+                    </button>
+                  </th>
+                  <th class="table__th">
+                    Контакты
+                  </th>
+                  <th class="table__th" colspan="2">
+                    Действия
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="table__tbody"></tbody>
+            </table>
+          </div>
         </div>
         <!-- add client btn -->
         <div class="clients__add-client">

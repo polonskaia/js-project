@@ -657,19 +657,19 @@ document.addEventListener('DOMContentLoaded', () => {
       // Фамилия Имя Отчество
       const tableDataFullName = document.createElement('td');
       tableDataFullName.innerHTML = fullName;
-      tableDataFullName.classList.add('table__td');
+      tableDataFullName.classList.add('table__td', 'table__td_fullname');
       row.appendChild(tableDataFullName);
 
       // Дата и время создания
       const tableDataCreate = document.createElement('td');
       tableDataCreate.innerHTML = formatDate(new Date(creatingDate));
-      tableDataCreate.classList.add('table__td');
+      tableDataCreate.classList.add('table__td', 'table__td_create');
       row.appendChild(tableDataCreate);
 
       // Последние изменения
       const tableDataUpdate = document.createElement('td');
       tableDataUpdate.innerHTML = formatDate(new Date(updatingDate));
-      tableDataUpdate.classList.add('table__td');
+      tableDataUpdate.classList.add('table__td', 'table__td_update');
       row.appendChild(tableDataUpdate);
 
       // Контакты
