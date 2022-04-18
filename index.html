@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Клиенты &mdash; skb.</title>
-    <link rel="shortcut icon" href="./img/favicon.png" type="image/png">
-    <link rel="stylesheet" href="./css/normalize.css">
-    <link rel="stylesheet" href="./css/style.css">
-    <script defer src="./js/script.js"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Клиенты &mdash; skb.</title>
+  <link rel="shortcut icon" href="./img/favicon.png" type="image/png">
+  <link rel="stylesheet" href="./css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/simplebar@5.3.6/dist/simplebar.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <script defer src="https://unpkg.com/simplebar@5.3.6/dist/simplebar.min.js"></script>
+  <script defer src="./js/script.js"></script>
 </head>
 <body>
   <header class="header">
@@ -29,7 +31,7 @@
             Клиенты
           </h1>
           <!-- table -->
-          <div class="big-table">
+          <div class="big-table" data-simplebar>
             <table class="clients__table">
               <thead class="table__thead">
                 <tr>
@@ -43,12 +45,12 @@
                       Фамилия Имя Отчество <span class="th__arrow th__arrow_fullname">А-Я</span>
                     </button>
                   </th>
-                  <th class="table__th">
+                  <th class="table__th table__th_create">
                     <button class="btn th__btn th__btn_create">
                       Дата и время создания <span class="th__arrow th__arrow_create"></span>
                     </button>
                   </th>
-                  <th class="table__th">
+                  <th class="table__th table__th_update">
                     <button class="btn th__btn th__btn_update">
                       Последние изменения <span class="th__arrow th__arrow_update"></span>
                     </button>
