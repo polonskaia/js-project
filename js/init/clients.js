@@ -35,7 +35,7 @@ const clients = [
         value: '@denchik'
       },
       {
-        type: 'Другое',
+        type: 'Twitter',
         value: 'twitter.com/deniSkvortsov'
       }
     ]
@@ -124,6 +124,28 @@ const clients = [
       {
         type: 'Email',
         value: 'kolya54@xyz.com'
+      }
+    ]
+  },
+  {
+    name: 'Екатерина',
+    surname: 'Ройзман',
+    contacts: [
+      {
+        type: 'Телефон',
+        value: '+79996755555'
+      },
+      {
+        type: 'Доп. телефон',
+        value: '+79990000000'
+      },
+      {
+        type: 'Facebook',
+        value: 'https://facebook.com/katerina'
+      },
+      {
+        type: 'Twitter',
+        value: 'twitter.com/katerina'
       }
     ]
   }

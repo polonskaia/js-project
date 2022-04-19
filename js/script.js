@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let sortedList;
   let targetUser;
 
-  const contactsList = ['Телефон', 'Доп. телефон', 'Email', 'Vk', 'Facebook', 'Twitter'];
+  const contactsList = ['Телефон', 'Доп. телефон', 'Email', 'Vk', 'Facebook', 'Twitter', 'Другое'];
 
   // Кнопка "Добавить клиента"
   addClientButton.addEventListener('click', () => {
@@ -731,7 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (contactType === 'Email') {
           contactDiv.appendChild(contactTooltip);
           contactDiv.appendChild(emailIcon);
-        } else if (contactType === 'Twitter') {
+        } else if (contactType === 'Twitter' || contactType === 'Другое') {
           contactDiv.appendChild(contactTooltip);
           contactDiv.appendChild(socialIcon);
         }
